@@ -66,8 +66,8 @@ export async function POST(req: NextRequest) {
 
     // Best-effort: show up in the /account feed. Never fails the request —
     // the email already sent, that's what matters most.
-    saveReportToHistory(email, report, { subscribed: willSubscribe }).catch((err) =>
-      console.error("Failed to save report history:", err)
+    saveReportToHistory(email, report, { subscribed: willSubscribe, emailed: true }).catch(
+      (err) => console.error("Failed to save report history:", err)
     );
 
     return NextResponse.json({ ok: true, subscribed: willSubscribe });

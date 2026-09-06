@@ -1,23 +1,23 @@
 const steps = [
   {
     n: "01",
-    title: "Four things about your product",
-    body: "What it does, its industry, your target customers, and any competitors you already know about.",
+    title: "Tell us about your product",
+    body: "What it does, its industry, your target customers, and any competitors you already know about. Four fields, two minutes.",
   },
   {
     n: "02",
-    title: "Claude actually browses the web",
-    body: "It searches and reads competitor websites, TechCrunch, and industry news — not just what it already knows.",
+    title: "Claude goes and actually looks",
+    body: "It searches and reads competitor websites, TechCrunch, and industry news in real time — not a guess based on old training data.",
   },
   {
     n: "03",
-    title: "Get a real PDF report",
-    body: "Opens in a new tab — generate it on demand, or subscribe for monthly delivery straight to your inbox.",
+    title: "Read it right on the page",
+    body: "Your report opens in a clean, scannable view — save it as a PDF whenever you want, or set up monthly delivery straight to your inbox.",
   },
   {
     n: "04",
-    title: "Act on ranked opportunities",
-    body: "Recommended next steps, ranked by impact, urgency, and effort.",
+    title: "Walk away with a plan",
+    body: "Every report ends with next steps ranked by impact, urgency, and effort — so you know exactly what to do first.",
   },
 ];
 
@@ -30,7 +30,7 @@ export default function HowItWorks() {
             How it works
           </p>
           <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            From product brief to intelligence report in minutes.
+            From product brief to full intelligence report in minutes.
           </h2>
         </div>
 

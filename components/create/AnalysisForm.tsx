@@ -176,6 +176,10 @@ export default function AnalysisForm({
             placeholder="you@company.com"
             className="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           />
+          <p className="mt-2 text-xs text-mist">
+            We&apos;ll save this report to your dashboard so you can find it later — just log
+            in with this same email, no account setup required.
+          </p>
           <label className="mt-3 flex items-center gap-2 text-sm text-mist">
             <input
               type="checkbox"
@@ -184,7 +188,7 @@ export default function AnalysisForm({
               onChange={(e) => setMonthlyDelivery(e.target.checked)}
               className="accent-accent"
             />
-            Subscribe — send me a fresh report like this every month
+            Also send me a fresh version of this every month
           </label>
         </div>
 
@@ -194,12 +198,13 @@ export default function AnalysisForm({
             disabled={!valid}
             className="rounded-lg bg-accent px-6 py-2.5 text-sm font-medium text-white shadow-card transition hover:bg-accent-dark disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
-            Research & Generate Report
+            Research & Generate My Report
           </button>
         </div>
         {!valid && (
           <p className="text-right text-xs text-mist">
-            Add a product name, description, industry, and at least one target customer.
+            Add a product name, description, industry, and at least one target customer to
+            continue.
           </p>
         )}
       </div>

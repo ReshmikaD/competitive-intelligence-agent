@@ -17,10 +17,10 @@ export default function Hero() {
           </h1>
 
           <p className="mt-6 max-w-lg text-balance text-lg leading-relaxed text-mist">
-            Tell it your product, industry, target customers, and
-            competitors. It goes and reads the actual competitor sites,
-            TechCrunch, industry news, then sends you a real PDF report —
-            once, or every month.
+            Tell it your product, industry, target customers, and known
+            competitors. It reads their actual websites, TechCrunch, and
+            industry news, then hands you a clear, decision-ready report in
+            minutes — once, or automatically every month.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -28,16 +28,14 @@ export default function Hero() {
               href="/create"
               className="rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white shadow-card transition hover:bg-accent-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
-              Run Your Own Analysis
+              Run Your Own Analysis →
             </Link>
-            <a
-              href="/api/sample-report-pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/demo"
               className="rounded-lg border border-line bg-white px-5 py-3 text-sm font-medium text-ink transition hover:border-ink/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
-              Open Sample Report (PDF) ↗
-            </a>
+              See a Sample Report
+            </Link>
           </div>
         </div>
 

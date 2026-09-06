@@ -23,9 +23,9 @@ export default function RunYourOwn() {
             </span>
             <h3 className="mt-4 text-lg font-semibold text-ink">Look at a sample first</h3>
             <p className="mt-2 text-sm leading-relaxed text-mist">
-              The sample PDF is real output from this exact tool, just generated ahead
-              of time for a fictional product. Open it any time to see what a report
-              actually looks like before you set anything up.
+              The sample report is real output from this exact tool, laid out exactly
+              like the one you&apos;d get — read it right on the page, or open it as a
+              polished PDF, before you set anything up.
             </p>
           </div>
 
@@ -38,7 +38,9 @@ export default function RunYourOwn() {
             <p className="mt-2 text-sm leading-relaxed text-mist">
               Clone the repo, drop in your own Anthropic API key (and Gmail if you want
               email delivery), and deploy it to Vercel — a few minutes, and it&apos;s
-              running under your account with your key. Steps are in the README.
+              running under your account with your key. Every report you generate with
+              an email attached is saved to your own dashboard, so you can log back in
+              and find it later. Steps are in the README.
             </p>
           </div>
         </div>

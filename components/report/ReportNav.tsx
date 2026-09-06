@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 
 const SECTIONS = [
-  { id: "exec-summary", label: "Executive Summary" },
-  { id: "competitor-landscape", label: "Competitor Landscape" },
-  { id: "feature-movement", label: "Feature Movement" },
-  { id: "market-trends", label: "Market Trends" },
-  { id: "opportunity-radar", label: "Opportunity Radar" },
-  { id: "recommended-actions", label: "Recommended Actions" },
-  { id: "sources", label: "Resources Consulted" },
+  { id: "exec-summary", label: "The 60-Second Version" },
+  { id: "competitor-landscape", label: "Who You're Up Against" },
+  { id: "feature-movement", label: "What They Shipped" },
+  { id: "market-trends", label: "The Bigger Picture" },
+  { id: "opportunity-radar", label: "Where to Focus Next" },
+  { id: "recommended-actions", label: "What To Do About It" },
+  { id: "sources", label: "Where This Came From" },
 ];
 
 export default function ReportNav() {

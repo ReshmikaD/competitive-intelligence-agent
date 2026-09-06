@@ -12,20 +12,20 @@ export const sampleReport: CompetitiveReport = {
   reportPeriod: "Last 30 days · Jul 12 – Aug 11, 2026",
   executiveSummary: {
     biggestMarketChanges:
-      "Three of PulseCRM's five direct competitors shipped AI-generated deal summaries or next-best-action recommendations this month, moving predictive guidance from a differentiator to a baseline expectation. Meanwhile, HubSpot's mid-market pricing restructure (effectively a 12–18% increase for teams above 10 seats) is the first pricing move in this segment in over a year and is already showing up in win-loss notes as a stated reason prospects are re-shopping.",
+      "AI-generated deal summaries just became table stakes. Three of PulseCRM's five direct competitors shipped this feature in the last month alone, so what used to set a product apart is now just the baseline buyers expect. On top of that, HubSpot raised mid-market prices 12–18% for teams above 10 seats — its first price move in over a year — and it's already showing up in win-loss notes as a reason prospects are shopping around.",
     emergingThemes:
-      "Two converging themes: (1) 'agentic' CRM workflows — competitors framing AI features around autonomous task execution (drafting follow-ups, updating fields, scheduling) rather than passive suggestions, and (2) usage-based and hybrid pricing experiments aimed at unseating per-seat pricing as the default mental model for CRM cost.",
+      "Two shifts are converging right now. First, competitors are moving from AI that suggests to AI that acts on its own — drafting follow-ups, updating fields, scheduling — without waiting for a person to approve each step. Second, several are testing usage-based or hybrid pricing to challenge the standard \"pay per seat\" model.",
     biggestThreats:
-      "Attio's expansion from founder-led sales into a dedicated mid-market motion (new SDR-focused onboarding flow, first outbound-focused case studies) directly targets PulseCRM's core ICP and is backed by a recently disclosed $28M raise earmarked for GTM. Close's aggressive migration-assistance push, offering white-glove data migration free for teams switching from legacy CRMs, is also pulling directly from the same switcher pool PulseCRM has historically won.",
+      "Attio is moving up-market straight into PulseCRM's lane. It launched a dedicated onboarding flow for outbound sales teams and published its first case studies aimed at that audience, backed by a newly disclosed $28M raise earmarked for growth. Close is also cutting into PulseCRM's territory, offering free white-glove data migration to any team switching off a legacy CRM — the exact switcher audience PulseCRM has historically won.",
     biggestOpportunities:
-      "HubSpot's price increase creates a 60–90 day window where mid-market teams are actively price-shopping — a switcher campaign timed now, with a transparent pricing comparison and a migration guarantee, has unusually high leverage. There is also a clear, unclaimed position around 'AI you can audit': every competitor's AI messaging leans on autonomy and speed, and none address the growing sales-ops concern about AI writing to customers unsupervised — a trust-and-control narrative is open.",
+      "HubSpot's price hike opens a 60–90 day window where mid-market teams are actively shopping for alternatives. A switcher campaign right now — clear pricing comparison, a migration guarantee — has unusually strong odds of landing. There's also an open position nobody has claimed: \"AI you can audit.\" Every competitor is selling AI on speed and autonomy, and none address the growing concern from sales leaders about AI messaging customers unsupervised.",
   },
   competitors: [
     {
       name: "HubSpot Sales Hub",
       category: "Direct",
       whyItMatters:
-        "The default choice for marketing-led mid-market teams and the most common competitor named in PulseCRM's own lost-deal notes; its ecosystem breadth (marketing, CMS, service) makes it sticky once adopted.",
+        "The competitor PulseCRM loses to most often. It's the default choice for marketing-led mid-market teams, and its broad suite (marketing, website, service tools) makes it hard to unseat once a team has adopted it.",
       differentiator: "Deep native integration across HubSpot's full marketing/CMS/service suite.",
       strength: "Brand trust and an enormous partner/integration ecosystem lower switching anxiety for buyers.",
       weakness: "Pricing complexity and seat-based scaling are the most frequently cited objections in competitive deals.",
@@ -34,7 +34,7 @@ export const sampleReport: CompetitiveReport = {
       name: "Salesforce Sales Cloud",
       category: "Direct",
       whyItMatters:
-        "The enterprise anchor competitors get compared against even in mid-market deals; sets the ceiling for 'what a CRM can eventually do,' which shapes buyer expectations even when Salesforce itself isn't a realistic option.",
+        "Sets the ceiling for what buyers expect a CRM to eventually do, even when they'd never actually buy it. It's the enterprise benchmark competitors get measured against, even in mid-market deals where Salesforce itself isn't realistic.",
       differentiator: "Unmatched customization depth and a certified admin/consultant ecosystem.",
       strength: "Perceived as the 'safe' enterprise-grade choice by procurement and IT stakeholders.",
       weakness: "Implementation time and cost are consistently cited as the top reason mid-market teams look elsewhere.",
@@ -43,7 +43,7 @@ export const sampleReport: CompetitiveReport = {
       name: "Pipedrive",
       category: "Direct",
       whyItMatters:
-        "The closest competitor on simplicity positioning; frequently the second tool evaluated alongside PulseCRM by teams who explicitly want to avoid Salesforce/HubSpot complexity.",
+        "PulseCRM's closest rival on ease of use. It's the second tool most often evaluated alongside PulseCRM by teams who specifically want to avoid Salesforce or HubSpot's complexity.",
       differentiator: "Visual pipeline-first UX that sales reps consistently rate as the easiest to adopt with no training.",
       strength: "Fast time-to-value — teams report being fully onboarded within days, not weeks.",
       weakness: "Weaker native reporting and forecasting depth once teams pass ~25 reps.",
@@ -52,7 +52,7 @@ export const sampleReport: CompetitiveReport = {
       name: "Close",
       category: "Direct",
       whyItMatters:
-        "Purpose-built for inside-sales teams that call and email at volume, which overlaps heavily with PulseCRM's SMB-to-mid-market sales-led segment.",
+        "Built specifically for teams that call and email at high volume — which is a lot of PulseCRM's own customer base. That overlap makes every Close deal worth watching closely.",
       differentiator: "Built-in calling and SMS as first-class objects, not bolted-on integrations.",
       strength: "Power-user efficiency features (multi-line dialing, saved sequences) are best-in-class for high-volume outbound teams.",
       weakness: "Limited customization for teams with non-standard sales processes or complex approval workflows.",
@@ -62,16 +62,16 @@ export const sampleReport: CompetitiveReport = {
       name: "Attio",
       category: "Direct",
       whyItMatters:
-        "The fastest-growing named competitor in the last two quarters of PulseCRM's own deal notes; its recent enterprise fundraise and new SDR-focused onboarding signal a deliberate move up-market into PulseCRM's exact ICP.",
+        "The fastest-growing competitor showing up in PulseCRM's deal notes. Its new fundraise and new onboarding flow for outbound sales teams both point to a deliberate push into PulseCRM's exact customer base.",
       differentiator: "Fully flexible, spreadsheet-like data model that lets teams define their own objects without engineering help.",
-      strength: "Extremely strong word-of-mouth among modern, technical GTM teams and a design quality competitors are visibly copying.",
+      strength: "Extremely strong word-of-mouth among modern, technical sales teams and a design quality competitors are visibly copying.",
       weakness: "Newer AI features are still catching up in depth compared to incumbents with years of usage data.",
     },
     {
       name: "Notion (CRM templates + Notion AI)",
       category: "Indirect",
       whyItMatters:
-        "Increasingly the default 'good enough' CRM for early-stage and lean sales teams who haven't yet felt pain from a dedicated tool — a real source of delayed CRM purchases.",
+        "The \"good enough\" default for lean teams who haven't felt real pain yet. It's a genuine source of delayed CRM purchases, not a serious head-to-head competitor.",
       differentiator: "Zero incremental cost for teams already paying for Notion company-wide.",
       strength: "Total flexibility and familiarity — no new tool to learn for teams already living in Notion daily.",
       weakness: "No native email/calendar sync, calling, or pipeline automation without third-party connectors.",
@@ -80,16 +80,16 @@ export const sampleReport: CompetitiveReport = {
       name: "Airtable",
       category: "Indirect",
       whyItMatters:
-        "Common landing spot for ops-minded founders building a custom pipeline tracker before 'graduating' to a dedicated CRM — a source of both delayed purchases and, eventually, switcher opportunity.",
+        "A common stopgap for ops-minded founders building their own pipeline tracker before they're ready for a real CRM. It delays purchases now, but often becomes a switcher opportunity later.",
       differentiator: "Database-grade flexibility with a much gentler learning curve than a full CRM.",
-      strength: "Popular with ops and RevOps personas who want full control over data structure.",
+      strength: "Popular with operations teams who want full control over how their data is structured.",
       weakness: "No purpose-built sales workflows (sequences, forecasting, activity capture) without significant manual setup.",
     },
     {
       name: "Google Sheets + Apps Script",
       category: "Indirect",
       whyItMatters:
-        "Still the actual starting point for a meaningful share of very early-stage teams; represents the 'do nothing' competitor that PulseCRM's own sales team encounters in first calls.",
+        "The real starting point for a lot of very early-stage teams. It's the \"do nothing\" competitor — the one PulseCRM's own sales team runs into on first calls, not on a comparison chart.",
       differentiator: "Free, infinitely flexible, and requires no procurement process.",
       strength: "Zero cost and zero onboarding friction.",
       weakness: "Breaks down entirely past a handful of reps — no automation, no activity tracking, no reporting integrity.",
@@ -98,7 +98,7 @@ export const sampleReport: CompetitiveReport = {
       name: "Folk",
       category: "Emerging",
       whyItMatters:
-        "A newer, well-funded entrant explicitly targeting the 'anti-Salesforce' positioning PulseCRM has historically owned — worth watching closely even though deal overlap is currently low.",
+        "A newer, well-funded rival claiming the same \"anti-Salesforce, simple by design\" territory PulseCRM has owned. Deal overlap is low today, but worth watching closely.",
       differentiator: "Relationship-graph framing (people and companies as the core object, not just deals).",
       strength: "Strong design sensibility and growing traction with agencies and services businesses.",
       weakness: "Limited sales-specific reporting; not yet positioned for high-volume outbound teams.",
@@ -107,9 +107,9 @@ export const sampleReport: CompetitiveReport = {
       name: "Clay",
       category: "Emerging",
       whyItMatters:
-        "Not a CRM, but increasingly sits upstream of the CRM in GTM workflows (enrichment, list-building, AI-personalized outbound), which changes how — and whether — some prospects think they need a traditional CRM at all.",
+        "Not a CRM, but it now sits upstream of one — handling data enrichment, list-building, and AI-personalized outreach. That's starting to change whether some prospects think they need a traditional CRM at all.",
       differentiator: "AI-driven data enrichment and outbound personalization at a granularity no CRM natively offers.",
-      strength: "Viral adoption among modern RevOps teams and deep integration ecosystem via Zapier/native connectors.",
+      strength: "Viral adoption among modern sales-operations teams and a deep integration ecosystem via Zapier and native connectors.",
       weakness: "Not a system of record — teams still need a CRM downstream, which keeps it complementary rather than substitutive for now.",
     },
   ],
@@ -119,21 +119,21 @@ export const sampleReport: CompetitiveReport = {
       whatChanged:
         "Restructured Sales Hub Professional pricing, effectively raising cost 12–18% for teams above 10 seats, and bundled AI deal-summary features into the higher tier only.",
       whyItMatters:
-        "This is the first pricing move from a major incumbent in over a year and is already surfacing as a stated re-shopping reason in win-loss interviews — a real-time window for a switcher campaign.",
+        "This is the first price increase from a major player in over a year. It's already coming up in win-loss interviews as a reason prospects are shopping around — a real-time window for a switcher campaign.",
     },
     {
       competitor: "Attio",
       whatChanged:
-        "Launched a dedicated SDR onboarding flow and published its first two outbound-motion case studies, following a disclosed $28M raise earmarked for go-to-market expansion.",
+        "Launched a dedicated onboarding flow for outbound sales teams and published its first two case studies for that use case, following a disclosed $28M raise earmarked for growth.",
       whyItMatters:
-        "Signals a deliberate move from founder-led/technical-team adoption into PulseCRM's exact mid-market sales-led ICP — the clearest single threat this period.",
+        "Attio is deliberately moving from technical early adopters into PulseCRM's exact mid-market customer base. This is the single clearest threat this period.",
     },
     {
       competitor: "Close",
       whatChanged:
         "Introduced free white-glove data migration for teams switching from Salesforce, HubSpot, or Pipedrive, removing the single biggest friction point in a CRM switch.",
       whyItMatters:
-        "Directly targets the same switcher pool PulseCRM has historically won on ease-of-migration messaging — reduces PulseCRM's relative advantage there.",
+        "This goes after the exact switcher audience PulseCRM has historically won with easy-migration messaging — and it erodes that advantage.",
     },
     {
       competitor: "Pipedrive",
@@ -166,11 +166,11 @@ export const sampleReport: CompetitiveReport = {
   ],
   marketTrends: {
     industryTrends:
-      "The category is visibly consolidating around two positioning axes: 'AI-agentic' (Salesforce, HubSpot, increasingly Pipedrive) versus 'radically simple/flexible' (Attio, Folk, Airtable-adjacent tools). Pure ease-of-use without an AI story is becoming a harder position to defend on its own — buyers now expect both simplicity and intelligence, not a tradeoff between them.",
+      "The market is splitting into two camps: \"AI does it for you\" (Salesforce, HubSpot, increasingly Pipedrive) versus \"radically simple and flexible\" (Attio, Folk, and similar tools). Being just easy to use, without an AI story, is getting harder to sell on its own — buyers now expect both.",
     customerBehaviorShifts:
-      "Win-loss interviews this period show a measurable shift: 'we want AI that drafts and suggests' has been the majority ask for over a year, but a new and growing minority (roughly a fifth of interviews) now explicitly ask about approval steps and audit trails before letting AI touch customer-facing communication — a nascent trust concern that no competitor is addressing head-on yet.",
+      "\"We want AI that drafts and suggests\" has been the top ask for over a year. But a growing minority — roughly one in five conversations now — are asking for approval steps and audit trails before AI touches anything customer-facing. That's a new trust concern nobody is addressing yet.",
     aiTrends:
-      "Every direct competitor now ships at least one 'AI drafts your next message' feature; the differentiation frontier has moved to autonomy (does it just suggest, or does it act) and control (can a manager review, approve, or roll back AI actions). Salesforce is currently furthest on autonomy; no competitor has yet made control and auditability a headline feature.",
+      "Every direct competitor now ships some version of \"AI drafts your next message.\" The real competition has moved to two questions: does the AI just suggest, or does it act on its own, and can a manager review or undo what it does? Salesforce is furthest ahead on autonomy; nobody has yet made oversight and control their headline feature.",
   },
   opportunityRadar: [
     {
@@ -225,7 +225,7 @@ export const sampleReport: CompetitiveReport = {
   recommendedActions: {
     investigateNext: [
       "Pull the last 90 days of closed-lost deals where HubSpot was the alternative and check how many cite price as a factor — size the switcher campaign's addressable pool before building it.",
-      "Interview 3–5 recent Attio-considered prospects to understand exactly which SDR-onboarding or outbound features tipped their evaluation.",
+      "Interview 3–5 recent prospects who considered Attio to understand exactly which onboarding or outbound features tipped their evaluation.",
       "Audit current AI features for what an 'audit trail' add-on would actually require at the data-model level before committing engineering time.",
     ],
     customerConversations: [
@@ -236,7 +236,7 @@ export const sampleReport: CompetitiveReport = {
     roadmapOpportunities: [
       "Fast-follow: LinkedIn activity sync (addresses a validated, longstanding usability complaint with a scoped, medium-effort build).",
       "Differentiated bet: AI action audit trail and approval workflow (no competitor owns this position yet; aligns with an emerging, currently under-served buyer concern).",
-      "Defensive: Attio comparison page and updated sales battlecard (low effort, high urgency given Attio's disclosed GTM investment).",
+      "Defensive: Attio comparison page and updated sales battlecard (low effort, high urgency given Attio's disclosed growth-fund investment).",
     ],
   },
   sources: [

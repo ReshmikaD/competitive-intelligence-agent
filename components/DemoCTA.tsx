@@ -10,7 +10,7 @@ export default function DemoCTA() {
         </h2>
         <p className="mt-4 text-balance text-white/60">
           Run a live analysis on your own product, powered by Claude — or browse a full
-          sample report first, no signup required.
+          sample report first. No signup, no card, no waiting.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
           <Link
@@ -19,14 +19,12 @@ export default function DemoCTA() {
           >
             Run Your Own Analysis
           </Link>
-          <a
-            href="/api/sample-report-pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/demo"
             className="rounded-lg border border-white/15 px-6 py-3 text-sm font-medium text-white transition hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
           >
-            Open the sample PDF ↗
-          </a>
+            Browse the Sample Report
+          </Link>
         </div>
       </div>
     </section>

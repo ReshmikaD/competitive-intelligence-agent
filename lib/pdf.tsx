@@ -150,6 +150,24 @@ const styles = StyleSheet.create({
   },
 });
 
+/** Splits a paragraph at its first sentence so the PDF matches the web
+ *  report's "bold the point, then the detail" scanning pattern. */
+function splitLead(text: string): [string, string] {
+  const idx = text.indexOf(". ");
+  if (idx === -1) return [text, ""];
+  return [text.slice(0, idx + 1), text.slice(idx + 2)];
+}
+
+function Takeaway({ text }: { text: string }) {
+  const [lead, rest] = splitLead(text);
+  return (
+    <Text style={styles.cardBody}>
+      <Text style={{ fontFamily: "Helvetica-Bold" }}>{lead}</Text>
+      {rest ? ` ${rest}` : ""}
+    </Text>
+  );
+}
+
 function levelColor(level: Level) {
   return level === "High" ? COLORS.high : level === "Medium" ? COLORS.med : COLORS.low;
 }
@@ -203,22 +221,22 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
           Generated {new Date(report.generatedAt).toLocaleDateString()}
         </Text>
 
-        <Text style={styles.sectionTitle}>Executive Summary</Text>
+        <Text style={styles.sectionTitle}>The 60-Second Version</Text>
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Biggest market changes</Text>
-          <Text style={styles.cardBody}>{report.executiveSummary.biggestMarketChanges}</Text>
+          <Text style={styles.cardLabel}>What&apos;s changing</Text>
+          <Takeaway text={report.executiveSummary.biggestMarketChanges} />
         </View>
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Emerging themes</Text>
-          <Text style={styles.cardBody}>{report.executiveSummary.emergingThemes}</Text>
+          <Text style={styles.cardLabel}>Themes worth watching</Text>
+          <Takeaway text={report.executiveSummary.emergingThemes} />
         </View>
         <View style={[styles.card, { borderColor: COLORS.high }]}>
-          <Text style={[styles.cardLabel, { color: COLORS.high }]}>Biggest threats</Text>
-          <Text style={styles.cardBody}>{report.executiveSummary.biggestThreats}</Text>
+          <Text style={[styles.cardLabel, { color: COLORS.high }]}>Where you&apos;re exposed</Text>
+          <Takeaway text={report.executiveSummary.biggestThreats} />
         </View>
         <View style={[styles.card, { borderColor: COLORS.low }]}>
-          <Text style={[styles.cardLabel, { color: COLORS.low }]}>Biggest opportunities</Text>
-          <Text style={styles.cardBody}>{report.executiveSummary.biggestOpportunities}</Text>
+          <Text style={[styles.cardLabel, { color: COLORS.low }]}>Your best opening</Text>
+          <Takeaway text={report.executiveSummary.biggestOpportunities} />
         </View>
 
         <Footer />
@@ -227,7 +245,7 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
       {/* Competitor Landscape */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.sectionEyebrow}>Section 2</Text>
-        <Text style={styles.sectionTitle}>Competitor Landscape</Text>
+        <Text style={styles.sectionTitle}>Who You&apos;re Up Against</Text>
 
         {([
           ["Direct Competitors", direct],
@@ -243,17 +261,19 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
                 <View key={c.name} style={styles.card} wrap={false}>
                   <CategoryBadge category={c.category} />
                   <Text style={styles.competitorName}>{c.name}</Text>
-                  <Text style={[styles.cardBody, { marginBottom: 6 }]}>{c.whyItMatters}</Text>
+                  <View style={{ marginBottom: 6 }}>
+                    <Takeaway text={c.whyItMatters} />
+                  </View>
                   <Text style={styles.cardBody}>
-                    <Text style={{ fontFamily: "Helvetica-Bold" }}>Differentiator: </Text>
+                    <Text style={{ fontFamily: "Helvetica-Bold" }}>What sets them apart: </Text>
                     {c.differentiator}
                   </Text>
                   <Text style={styles.cardBody}>
-                    <Text style={{ fontFamily: "Helvetica-Bold" }}>Strength: </Text>
+                    <Text style={{ fontFamily: "Helvetica-Bold" }}>Where they&apos;re strong: </Text>
                     {c.strength}
                   </Text>
                   <Text style={styles.cardBody}>
-                    <Text style={{ fontFamily: "Helvetica-Bold" }}>Weakness: </Text>
+                    <Text style={{ fontFamily: "Helvetica-Bold" }}>Where they&apos;re weak: </Text>
                     {c.weakness}
                   </Text>
                 </View>
@@ -268,30 +288,30 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
       {/* Feature Movement + Market Trends */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.sectionEyebrow}>Section 3</Text>
-        <Text style={styles.sectionTitle}>Feature Movement</Text>
+        <Text style={styles.sectionTitle}>What Competitors Shipped Recently</Text>
         {report.featureMovement.map((f, i) => (
           <View key={i} style={styles.card} wrap={false}>
             <Text style={styles.cardLabel}>{f.competitor}</Text>
             <Text style={[styles.cardBody, { fontFamily: "Helvetica-Bold", marginBottom: 4 }]}>
               {f.whatChanged}
             </Text>
-            <Text style={styles.cardBody}>{f.whyItMatters}</Text>
+            <Takeaway text={f.whyItMatters} />
           </View>
         ))}
 
         <Text style={[styles.sectionEyebrow, { marginTop: 16 }]}>Section 4</Text>
-        <Text style={styles.sectionTitle}>Market Trends</Text>
+        <Text style={styles.sectionTitle}>The Bigger Picture</Text>
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Industry trends</Text>
-          <Text style={styles.cardBody}>{report.marketTrends.industryTrends}</Text>
+          <Text style={styles.cardLabel}>Where the market&apos;s heading</Text>
+          <Takeaway text={report.marketTrends.industryTrends} />
         </View>
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Customer behavior shifts</Text>
-          <Text style={styles.cardBody}>{report.marketTrends.customerBehaviorShifts}</Text>
+          <Text style={styles.cardLabel}>How buyers are changing</Text>
+          <Takeaway text={report.marketTrends.customerBehaviorShifts} />
         </View>
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>AI trends</Text>
-          <Text style={styles.cardBody}>{report.marketTrends.aiTrends}</Text>
+          <Text style={styles.cardLabel}>What&apos;s happening with AI</Text>
+          <Takeaway text={report.marketTrends.aiTrends} />
         </View>
 
         <Footer />
@@ -300,7 +320,7 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
       {/* Opportunity Radar + Recommended Actions */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.sectionEyebrow}>Section 5</Text>
-        <Text style={styles.sectionTitle}>Opportunity Radar</Text>
+        <Text style={styles.sectionTitle}>Where to Focus Next</Text>
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderCell, { width: 24 }]}>#</Text>
           <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Opportunity</Text>
@@ -327,11 +347,11 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
         ))}
 
         <Text style={[styles.sectionEyebrow, { marginTop: 18 }]}>Section 6</Text>
-        <Text style={styles.sectionTitle}>Recommended Actions</Text>
+        <Text style={styles.sectionTitle}>What To Do About It</Text>
         {([
-          ["Investigate next", report.recommendedActions.investigateNext],
-          ["Customer conversations", report.recommendedActions.customerConversations],
-          ["Roadmap opportunities", report.recommendedActions.roadmapOpportunities],
+          ["Dig into this next", report.recommendedActions.investigateNext],
+          ["Ask customers about", report.recommendedActions.customerConversations],
+          ["Consider for the roadmap", report.recommendedActions.roadmapOpportunities],
         ] as const).map(([label, items]) => (
           <View key={label} style={{ marginBottom: 10 }} wrap={false}>
             <Text style={styles.groupLabel}>{label}</Text>
@@ -350,12 +370,10 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
       {/* Sources */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.sectionEyebrow}>Appendix</Text>
-        <Text style={styles.sectionTitle}>Resources Consulted</Text>
+        <Text style={styles.sectionTitle}>Where This Came From</Text>
         <Text style={[styles.cardBody, { color: COLORS.mist, marginBottom: 14 }]}>
-          This report was produced using live web research — competitor websites, product
-          pages, and industry news were read directly rather than relying on general
-          knowledge alone. Below are the specific sources consulted while researching this
-          report.
+          Real pages Claude actually read while researching this report — not general
+          knowledge.
         </Text>
         {report.sources.length === 0 ? (
           <Text style={styles.cardBody}>No external sources were recorded for this report.</Text>

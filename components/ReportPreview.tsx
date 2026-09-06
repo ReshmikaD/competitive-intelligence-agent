@@ -34,19 +34,17 @@ export default function ReportPreview() {
             <p className="mt-4 text-mist">
               Pulled from a full sample analysis for a fictional CRM product, PulseCRM,
               tracked against 10 direct, indirect, and emerging competitors. This teaser
-              always uses fixed mock data — open the full PDF to see everything a real
-              report includes.
+              always uses fixed mock data — open the full sample to see everything a real
+              report includes, laid out exactly like the one you&apos;d get.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="/api/sample-report-pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/demo"
               className="rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-white transition hover:bg-ink/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
-              Open the sample PDF &rarr;
-            </a>
+              Open the sample report &rarr;
+            </Link>
             <Link
               href="/create"
               className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-ink/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"

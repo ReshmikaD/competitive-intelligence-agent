@@ -165,6 +165,13 @@ Requirements:
 - Write in a sharp, analytical PM voice — confident, concise, evidence-oriented, no filler.
 - This report should be extensive enough that a Product Manager can make real prioritization decisions from it alone.
 
+WRITING STYLE — this is read by a busy Product Manager skimming between meetings, so clarity beats sophistication:
+- Every "whyItMatters" / narrative field (executiveSummary entries, each competitor's whyItMatters, featureMovement's whyItMatters, marketTrends entries) must open with ONE short, punchy sentence that states the takeaway in plain language — that first sentence is shown bolded on its own, so it has to stand alone and make sense out of context. Follow it with 1-2 supporting sentences of detail/evidence.
+- Avoid unexplained jargon and insider acronyms (e.g. ICP, GTM, SDR, RevOps, TAM, NRR). If a technical or industry term is genuinely necessary, spell it out in plain words the first time ("go-to-market approach" rather than "GTM").
+- Prefer short, everyday words over corporate-speak: say "customers switching" not "customer migration patterns," say "cheaper" not "more cost-effective," say "AI features" not "AI-native capabilities."
+- Keep sentences short. One idea per sentence. No stacked clauses.
+- recommendedActions items should read like a to-do list item a PM could paste straight into a ticket — concrete and specific, not abstract analysis.
+
 RESEARCH BRIEF:
 """
 ${researchBrief}

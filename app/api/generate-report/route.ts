@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReport } from "@/lib/anthropic";
-import { saveSubscription } from "@/lib/store";
+import { saveSubscription, saveReportToHistory } from "@/lib/store";
 import type { AnalysisInput } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -44,6 +44,17 @@ export async function POST(req: NextRequest) {
       saveSubscription(body.email, body).catch((err) =>
         console.error("Failed to save monthly subscription:", err)
       );
+    }
+
+    // Best-effort: as long as an email was given, save this report to that
+    // person's dashboard right away — logging in later should show every
+    // report they've ever generated, not just the ones they explicitly
+    // emailed to themselves.
+    if (body.email) {
+      saveReportToHistory(body.email, report, {
+        subscribed: Boolean(body.monthlyDelivery),
+        emailed: false,
+      }).catch((err) => console.error("Failed to save report history:", err));
     }
 
     return NextResponse.json({ report });

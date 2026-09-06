@@ -45,8 +45,8 @@ export async function GET(req: NextRequest) {
         manageUrl: `${appUrl}/account`,
         unsubscribeUrl: `${appUrl}/api/unsubscribe?token=${unsubscribeToken}`,
       });
-      await saveReportToHistory(sub.email, report, { subscribed: true }).catch((err) =>
-        console.error("Failed to save report history:", err)
+      await saveReportToHistory(sub.email, report, { subscribed: true, emailed: true }).catch(
+        (err) => console.error("Failed to save report history:", err)
       );
       results.push({ email: sub.email, ok: true });
     } catch (err) {

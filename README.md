@@ -3,17 +3,20 @@
 An AI-powered competitive intelligence tool for Product Managers. Give it four
 things — your product, its industry, your target customers, and any
 competitors you know about — and Claude actually browses the web (competitor
-websites, TechCrunch, industry news) to research and return a real PDF
-report: competitor landscape, feature movement, market trends, an opportunity
-radar, recommended actions, and the exact sources it consulted. Open the PDF
-once, or subscribe to get a fresh one emailed to you every month.
+websites, TechCrunch, industry news) to research and return a full report:
+competitor landscape, feature movement, market trends, an opportunity radar,
+recommended actions, and the exact sources it consulted. The report opens
+in a clean, readable in-page view (save it as a PDF whenever you want), and
+every report you generate is saved to your own dashboard — log in with your
+email and it's all there. Subscribe once and a fresh one lands in your inbox
+every month.
 
-There's no shared backend and no account system holding anyone's data — the
-sample PDF works with zero setup, but generating a real report needs an
-Anthropic API key. Clone this repo, add your own key (and optionally Gmail +
-Upstash for email and monthly delivery), and deploy it to Vercel under your
-own account. Nothing about your product or competitors goes anywhere except
-your own Claude API key.
+There's no shared backend — everyone brings their own Anthropic API key, so
+nothing about your product or competitors goes anywhere except your own
+Claude account. The sample report at `/demo` works with zero setup so you
+can see the real thing before connecting a key. Clone this repo, add your
+own key (and optionally Gmail + Upstash for email, login, and monthly
+delivery), and deploy it to Vercel under your own account.
 
 ## Stack
 
@@ -100,9 +103,9 @@ broken form.
 Once signed in, `/account` shows two things:
 - **Active subscriptions** — every product you've subscribed to monthly
   reports for, with a one-click unsubscribe.
-- **Report feed** — every report that's ever actually been emailed to you
-  (one-off or monthly), each with a "View PDF" button that re-renders the
-  stored data fresh rather than storing the PDF binary itself.
+- **Your Reports** — every report generated with that email address, whether
+  or not it was ever emailed — each with a "View PDF" button that re-renders
+  the stored data fresh rather than storing the PDF binary itself.
 
 Every emailed report also includes its own one-click unsubscribe link in
 the footer (`/api/unsubscribe?token=...`) — this works without logging in
@@ -146,7 +149,7 @@ app/
   login/page.tsx                Passwordless sign-in form
   account/page.tsx               The report feed + active subscriptions (session-gated)
   create/page.tsx              Interactive workflow: 4-field form → generating → report
-  demo/page.tsx                 Redirects to the sample PDF (kept for old links)
+  demo/page.tsx                 Renders the fixed sample report in the real ReportView UI
   api/generate-report/          Runs the research + structure pipeline, returns a CompetitiveReport
   api/send-report-email/        Renders the PDF, emails it, auto-subscribes + saves to history
   api/cron/monthly-report/      Vercel Cron target — regenerates, resends, saves to history
@@ -171,6 +174,6 @@ lib/
   email.ts                      Email HTML rendering + sending, with PDF attachment + retry
   auth.ts                        Login tokens, unsubscribe tokens, signed session cookies
   store.ts                      Upstash-backed subscriptions + report history
-  sampleReport.ts                Fixed data behind the sample PDF
+  sampleReport.ts                Fixed data behind the /demo sample report
   types.ts                      Shared TypeScript types
 ```

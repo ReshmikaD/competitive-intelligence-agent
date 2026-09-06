@@ -120,21 +120,32 @@ export const monthlyAutomationEnabled = isConfigured;
 
 export interface HistoryEntry {
   report: CompetitiveReport;
-  sentAt: string;
+  createdAt: string;
+  /** True once this exact report has actually been emailed (one-off send
+   *  or monthly delivery). False for entries saved purely because the
+   *  person generated a report with an email attached — every generated
+   *  report shows up in the dashboard whether or not it was ever sent. */
+  emailed: boolean;
   subscribed: boolean;
 }
 
-/** Record that a report was actually emailed to this address, so it shows
- *  up in their /account feed. Called after every successful send — both
- *  one-off "email this report" sends and monthly cron deliveries. */
+/** Add an entry to this email's /account feed. Called any time a report
+ *  should show up there: right after generation (if an email was given),
+ *  after a one-off "email this report" send, and after every monthly cron
+ *  delivery. Every call is best-effort and never blocks the caller. */
 export async function saveReportToHistory(
   email: string,
   report: CompetitiveReport,
-  opts: { subscribed: boolean }
+  opts: { subscribed: boolean; emailed: boolean }
 ): Promise<void> {
   if (!isConfigured()) return;
   const key = HISTORY_PREFIX + email.toLowerCase();
-  const entry: HistoryEntry = { report, sentAt: new Date().toISOString(), subscribed: opts.subscribed };
+  const entry: HistoryEntry = {
+    report,
+    createdAt: new Date().toISOString(),
+    emailed: opts.emailed,
+    subscribed: opts.subscribed,
+  };
   await redisFetch(["LPUSH", key, JSON.stringify(entry)]);
   await redisFetch(["LTRIM", key, "0", String(HISTORY_LIMIT - 1)]);
 }

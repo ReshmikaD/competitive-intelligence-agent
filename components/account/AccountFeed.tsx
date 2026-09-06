@@ -120,16 +120,17 @@ export default function AccountFeed({
       {/* Report feed */}
       <section>
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-mistStrong">
-          Report Feed
+          Your Reports
         </h2>
         {history.length === 0 ? (
           <p className="rounded-xl2 border border-line bg-white p-5 text-sm text-mist">
-            Reports you've emailed to yourself will show up here.
+            Every report you generate with this email will show up here — you don&apos;t
+            need to email it to yourself first.
           </p>
         ) : (
           <div className="space-y-3">
             {history.map((entry, i) => {
-              const key = `${entry.report.productName}-${entry.sentAt}-${i}`;
+              const key = `${entry.report.productName}-${entry.createdAt}-${i}`;
               return (
                 <div
                   key={key}
@@ -138,7 +139,13 @@ export default function AccountFeed({
                   <div>
                     <p className="text-sm font-semibold text-ink">{entry.report.productName}</p>
                     <p className="text-xs text-mist">
-                      {entry.report.reportPeriod} &middot; sent {new Date(entry.sentAt).toLocaleDateString()}
+                      {entry.report.reportPeriod} &middot; generated{" "}
+                      {new Date(entry.createdAt).toLocaleDateString()}
+                      {entry.emailed && (
+                        <span className="ml-2 rounded-full bg-ink/5 px-2 py-0.5 text-[10px] font-medium text-ink">
+                          Emailed
+                        </span>
+                      )}
                       {entry.subscribed && (
                         <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-medium text-accent-dark">
                           Monthly

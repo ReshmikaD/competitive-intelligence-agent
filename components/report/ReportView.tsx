@@ -21,14 +21,42 @@ function LevelBadge({ level }: { level: Level }) {
   );
 }
 
-function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+function SectionHeading({
+  eyebrow,
+  title,
+  caption,
+}: {
+  eyebrow: string;
+  title: string;
+  caption?: string;
+}) {
   return (
     <div className="mb-6">
       <p className="font-mono text-xs font-medium uppercase tracking-wider text-accent">
         {eyebrow}
       </p>
       <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+      {caption && <p className="mt-1.5 text-sm text-mist">{caption}</p>}
     </div>
+  );
+}
+
+/** Splits a paragraph at its first sentence so the "so what" reads as a bold
+ *  headline, with everything else as smaller supporting detail underneath —
+ *  the same lead-with-the-point structure a busy reader scans a memo for. */
+function splitLead(text: string): [string, string] {
+  const idx = text.indexOf(". ");
+  if (idx === -1) return [text, ""];
+  return [text.slice(0, idx + 1), text.slice(idx + 2)];
+}
+
+function Takeaway({ text, className = "" }: { text: string; className?: string }) {
+  const [lead, rest] = splitLead(text);
+  return (
+    <p className={`text-sm leading-relaxed ${className}`}>
+      <span className="font-medium text-ink">{lead}</span>{" "}
+      {rest && <span className="text-mist">{rest}</span>}
+    </p>
   );
 }
 
@@ -45,17 +73,17 @@ function CompetitorGroup({ title, items }: { title: string; items: Competitor[] 
             key={c.name}
             className="group rounded-xl2 border border-line bg-white p-5 open:shadow-cardHover"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
               <span className="text-base font-semibold text-ink">{c.name}</span>
-              <span className="text-mist transition group-open:rotate-45">+</span>
+              <span className="mt-0.5 shrink-0 text-mist transition group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-2 text-sm leading-relaxed text-mist">{c.whyItMatters}</p>
+            <Takeaway text={c.whyItMatters} className="mt-2" />
             <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-open:grid-rows-[1fr]">
               <div className="min-h-0 overflow-hidden">
                 <div className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
-                  <p><span className="font-medium text-ink">Differentiator: </span><span className="text-mist">{c.differentiator}</span></p>
-                  <p><span className="font-medium text-ink">Strength: </span><span className="text-mist">{c.strength}</span></p>
-                  <p><span className="font-medium text-ink">Weakness: </span><span className="text-mist">{c.weakness}</span></p>
+                  <p><span className="font-medium text-ink">What sets them apart: </span><span className="text-mist">{c.differentiator}</span></p>
+                  <p><span className="font-medium text-ink">Where they&apos;re strong: </span><span className="text-mist">{c.strength}</span></p>
+                  <p><span className="font-medium text-ink">Where they&apos;re weak: </span><span className="text-mist">{c.weakness}</span></p>
                 </div>
               </div>
             </div>
@@ -211,50 +239,59 @@ export default function ReportView({
         <div>
           {/* Executive Summary */}
           <section id="exec-summary" className="mb-16">
-            <SectionHeading eyebrow="Section 1" title="Executive Summary" />
+            <SectionHeading
+              eyebrow="Section 1"
+              title="The 60-Second Version"
+              caption="Read this part. Everything after it is backup, in case you want to dig in."
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl2 border border-line bg-white p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">Biggest market changes</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.executiveSummary.biggestMarketChanges}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">What&apos;s changing</p>
+                <Takeaway text={report.executiveSummary.biggestMarketChanges} className="mt-2" />
               </div>
               <div className="rounded-xl2 border border-line bg-white p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">Emerging themes</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.executiveSummary.emergingThemes}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">Themes worth watching</p>
+                <Takeaway text={report.executiveSummary.emergingThemes} className="mt-2" />
               </div>
               <div className="rounded-xl2 border border-threat-high/30 bg-threat-high/5 p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-threat-high">Biggest threats</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.executiveSummary.biggestThreats}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-threat-high">Where you&apos;re exposed</p>
+                <Takeaway text={report.executiveSummary.biggestThreats} className="mt-2" />
               </div>
               <div className="rounded-xl2 border border-threat-low/30 bg-threat-low/5 p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-threat-low">Biggest opportunities</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.executiveSummary.biggestOpportunities}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-threat-low">Your best opening</p>
+                <Takeaway text={report.executiveSummary.biggestOpportunities} className="mt-2" />
               </div>
             </div>
           </section>
 
           {/* Competitor Landscape */}
           <section id="competitor-landscape" className="mb-16">
-            <SectionHeading eyebrow="Section 2" title="Competitor Landscape" />
+            <SectionHeading
+              eyebrow="Section 2"
+              title="Who You're Up Against"
+              caption="Every competitor tracked this period, grouped by how directly they compete for the same customer. Click a name for the full breakdown."
+            />
             <div className="mb-8">
               <CategoryBarChart competitors={report.competitors} />
             </div>
             <CompetitorGroup title="Direct Competitors" items={direct} />
             <CompetitorGroup title="Indirect Competitors" items={indirect} />
-            <CompetitorGroup title="Emerging Players" items={emerging} />
+            <CompetitorGroup title="Emerging Players to Watch" items={emerging} />
           </section>
 
           {/* Feature Movement */}
           <section id="feature-movement" className="mb-16">
-            <SectionHeading eyebrow="Section 3" title="Feature Movement" />
+            <SectionHeading
+              eyebrow="Section 3"
+              title="What Competitors Shipped Recently"
+              caption="Recent moves worth knowing about, and why each one matters to you specifically."
+            />
             <div className="space-y-3">
               {report.featureMovement.map((f, i) => (
                 <div key={i} className="rounded-xl2 border border-line bg-white p-5">
                   <p className="text-sm font-semibold text-ink">{f.competitor}</p>
-                  <p className="mt-1 text-sm text-ink">{f.whatChanged}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-mist">
-                    <span className="font-medium text-mist">Why it matters: </span>
-                    {f.whyItMatters}
-                  </p>
+                  <p className="mt-1 text-sm font-medium text-ink">{f.whatChanged}</p>
+                  <Takeaway text={f.whyItMatters} className="mt-2" />
                 </div>
               ))}
             </div>
@@ -262,26 +299,34 @@ export default function ReportView({
 
           {/* Market Trends */}
           <section id="market-trends" className="mb-16">
-            <SectionHeading eyebrow="Section 4" title="Market Trends" />
+            <SectionHeading
+              eyebrow="Section 4"
+              title="The Bigger Picture"
+              caption="Shifts across the whole market — not just your named competitors — that are likely to shape what customers expect next."
+            />
             <div className="space-y-4">
               <div className="rounded-xl2 border border-line bg-white p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">Industry trends</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.marketTrends.industryTrends}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">Where the market&apos;s heading</p>
+                <Takeaway text={report.marketTrends.industryTrends} className="mt-2" />
               </div>
               <div className="rounded-xl2 border border-line bg-white p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">Customer behavior shifts</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.marketTrends.customerBehaviorShifts}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">How buyers are changing</p>
+                <Takeaway text={report.marketTrends.customerBehaviorShifts} className="mt-2" />
               </div>
               <div className="rounded-xl2 border border-line bg-white p-5">
-                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">AI trends</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink">{report.marketTrends.aiTrends}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wide text-mistStrong">What&apos;s happening with AI</p>
+                <Takeaway text={report.marketTrends.aiTrends} className="mt-2" />
               </div>
             </div>
           </section>
 
           {/* Opportunity Radar */}
           <section id="opportunity-radar" className="mb-16">
-            <SectionHeading eyebrow="Section 5" title="Opportunity Radar" />
+            <SectionHeading
+              eyebrow="Section 5"
+              title="Where to Focus Next"
+              caption="Ranked by what would matter most to customers, how urgent the competitive window is, and how much work it'd take."
+            />
             <div className="mb-6">
               <OpportunityQuadrant items={report.opportunityRadar} />
             </div>
@@ -318,12 +363,16 @@ export default function ReportView({
 
           {/* Recommended Actions */}
           <section id="recommended-actions" className="mb-16">
-            <SectionHeading eyebrow="Section 6" title="Recommended Actions" />
+            <SectionHeading
+              eyebrow="Section 6"
+              title="What To Do About It"
+              caption="Concrete next steps, split by who's best placed to run with each one."
+            />
             <div className="grid gap-4 md:grid-cols-3">
               {[
-                { title: "Investigate next", items: report.recommendedActions.investigateNext },
-                { title: "Customer conversations", items: report.recommendedActions.customerConversations },
-                { title: "Roadmap opportunities", items: report.recommendedActions.roadmapOpportunities },
+                { title: "Dig into this next", items: report.recommendedActions.investigateNext },
+                { title: "Ask customers about", items: report.recommendedActions.customerConversations },
+                { title: "Consider for the roadmap", items: report.recommendedActions.roadmapOpportunities },
               ].map((group) => (
                 <div key={group.title} className="rounded-xl2 border border-line bg-white p-5">
                   <p className="text-sm font-semibold text-ink">{group.title}</p>
@@ -342,12 +391,11 @@ export default function ReportView({
 
           {/* Sources */}
           <section id="sources">
-            <SectionHeading eyebrow="Appendix" title="Resources Consulted" />
-            <p className="mb-4 text-sm text-mist">
-              This report was produced using live web research — competitor websites, product
-              pages, and industry news were read directly rather than relying on general
-              knowledge alone.
-            </p>
+            <SectionHeading
+              eyebrow="Appendix"
+              title="Where This Came From"
+              caption="Real pages Claude actually read while researching this report — not general knowledge."
+            />
             {report.sources.length === 0 ? (
               <p className="text-sm text-mist">No external sources were recorded for this report.</p>
             ) : (
