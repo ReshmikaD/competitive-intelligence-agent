@@ -1,0 +1,26 @@
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "Competitive Intelligence Agent — competitor research for Product Managers",
+  description:
+    "Competitive Intelligence Agent turns scattered market signals into a monthly report that tells you what changed, why it matters, and what to do next.",
+  openGraph: {
+    title: "Competitive Intelligence Agent",
+    description:
+      "Tell it your product and competitors, and it does the research — a real report on what changed and what to do about it.",
+    type: "website",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className="font-sans antialiased">{children}</body>
+    </html>
+  );
+}
