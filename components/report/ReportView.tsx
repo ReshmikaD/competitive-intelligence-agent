@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { AnalysisInput, CompetitiveReport, Competitor, Level } from "@/lib/types";
-import EmailReportButton from "./EmailReportButton";
 import ReportNav from "./ReportNav";
 import OpportunityQuadrant from "./charts/OpportunityQuadrant";
 import CategoryBarChart from "./charts/CategoryBarChart";
@@ -197,7 +196,6 @@ export default function ReportView({
           >
             {pdfLoading ? "Opening PDF…" : "View as PDF ↗"}
           </button>
-          <EmailReportButton report={report} analysisInput={analysisInput} />
           <button
             onClick={handleCopyLink}
             className="rounded-lg border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-ink/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"

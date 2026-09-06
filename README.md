@@ -45,19 +45,20 @@ Open `http://localhost:3000`.
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Yes | Powers report generation. Get one at [console.anthropic.com](https://console.anthropic.com). |
 | `ANTHROPIC_MODEL` | No | Defaults to `claude-sonnet-5`. |
-| `GMAIL_USER` | For email | The Gmail address reports are sent from. |
-| `GMAIL_APP_PASSWORD` | For email | A 16-character [Gmail App Password](https://support.google.com/accounts/answer/185833) — not your regular password. Requires 2-Step Verification enabled on the account. |
-| `UPSTASH_REDIS_REST_URL` | For monthly automation, login, feed | From an [Upstash](https://upstash.com) Redis database (free tier is enough). |
+| `GMAIL_USER` | For login emails, monthly delivery | The Gmail address login links and monthly reports are sent from. |
+| `GMAIL_APP_PASSWORD` | For login emails, monthly delivery | A 16-character [Gmail App Password](https://support.google.com/accounts/answer/185833) — not your regular password. Requires 2-Step Verification enabled on the account. |
+| `UPSTASH_REDIS_REST_URL` | For monthly automation, login, feed | From an [Upstasg](https://upstash.com) Redis database (free tier is enough). |
 | `UPSTASH_REDIS_REST_TOKEN` | For monthly automation, login, feed | Same Upstash database. |
 | `SESSION_SECRET` | For login, feed | Signs session cookies. Generate with `openssl rand -hex 32`. |
 | `CRON_SECRET` | For monthly automation | Any random string — verifies that only Vercel Cron can trigger the monthly job. |
 | `DEBUG_EMAIL_SECRET` | Optional | Any random string — enables `/api/debug/email-check` to verify Gmail is configured correctly. |
 
 The app degrades gracefully without the optional variables: without Gmail
-credentials, the "email this report" button will error; without Upstash and
-`SESSION_SECRET`, emailing still works but "subscribe monthly" silently has
-no effect, and `/login` and `/account` show a clear "not configured" error
-instead of working.
+credentials, `/login` can't send its magic-link email and monthly report
+deliveries silently fail to send; without Upstash and `SESSION_SECRET`,
+`/login` and `/account` show a clear "not configured" error instead of a
+broken form. Generating a report at `/create` always works regardless —
+none of this is required for the core flow.
 
 `web_search` and `web_fetch` are Anthropic server-side tools — no extra API
 key or setup needed beyond `ANTHROPIC_API_KEY`; Anthropic runs the actual web
@@ -85,18 +86,19 @@ exactly what's wrong (bad credentials, 2-Step Verification not enabled,
 etc.) rather than you finding out a month from now when the cron job's send
 silently fails.
 
-Once that passes, send yourself a real one end-to-end: run `/create`, enter
-your own email, and click **Email this report**. Every send also retries
-once automatically if Gmail's SMTP connection drops mid-request, so a single
-transient failure won't lose someone's report.
+Once that passes, send yourself a real one end-to-end: go to `/login` and
+sign in with your own email — if the magic-link email lands in your inbox,
+Gmail is wired up correctly. Every send also retries once automatically if
+Gmail's SMTP connection drops mid-request, so a single transient failure
+won't lose someone's login link or monthly report.
 
 ## Login, unsubscribing, and the report feed
 
 Signing in is passwordless — enter an email on `/login`, get a one-time link
 sent to that inbox (valid 15 minutes), click it, and you're in. There's no
 separate signup: whoever can read a given inbox controls that inbox's
-report history, the same trust model as "email me this report" already
-uses. This needs `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` and
+report history, the same trust model monthly email delivery already uses.
+This needs `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` and
 `SESSION_SECRET` — without them, `/login` shows a clear error instead of a
 broken form.
 
@@ -115,9 +117,8 @@ rather not create an account just to opt out.
 ## How monthly delivery actually works
 
 1. On `/create`, checking "Also send me this report automatically every
-   month" (or clicking **Email this report** from a generated report) saves
-   the report's original inputs to Upstash under the recipient's email,
-   alongside the last-sent timestamp.
+   month" saves the report's original inputs to Upstash under the
+   recipient's email, alongside the last-sent timestamp.
 2. `vercel.json` defines a cron job hitting `/api/cron/monthly-report` on the
    1st of every month.
 3. That route lists all active subscriptions, re-runs the full research
@@ -150,8 +151,7 @@ app/
   account/page.tsx               The report feed + active subscriptions (session-gated)
   create/page.tsx              Interactive workflow: 4-field form → generating → report
   demo/page.tsx                 Renders the fixed sample report in the real ReportView UI
-  api/generate-report/          Runs the research + structure pipeline, returns a CompetitiveReport
-  api/send-report-email/        Renders the PDF, emails it, auto-subscribes + saves to history
+  api/generate-report/          Runs the research + structure pipeline, saves to history + subscribes
   api/cron/monthly-report/      Vercel Cron target — regenerates, resends, saves to history
   api/auth/request-link/         Emails a one-time login link
   api/auth/verify/                Consumes the login token, sets the session cookie
@@ -166,7 +166,7 @@ pages/api/
   # the comment at the top of report-pdf.ts.
 components/
   create/                      AnalysisForm (4 fields + tag inputs), GeneratingState
-  report/                      ReportView, ReportNav, EmailReportButton, charts/
+  report/                      ReportView, ReportNav, charts/
   account/                     AccountFeed — the interactive part of /account
 lib/
   anthropic.ts                  Research (web_search/web_fetch) + structured extraction
