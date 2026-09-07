@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Scout AI — competitor research for Product Managers",
+  title: "ScoutAI — competitor research for Product Managers",
   description:
-    "Scout AI turns scattered market signals into a clear report that tells you what changed, why it matters, and what to do next.",
+    "ScoutAI turns scattered market signals into a clear report that tells you what changed, why it matters, and what to do next.",
   openGraph: {
-    title: "Scout AI",
+    title: "ScoutAI",
     description:
       "Tell it your product and competitors, and it does the research — a real report on what changed and what to do about it.",
     type: "website",
