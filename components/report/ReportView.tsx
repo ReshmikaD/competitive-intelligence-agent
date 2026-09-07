@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import type { AnalysisInput, CompetitiveReport, Competitor, Level } from "@/lib/types";
 import ReportNav from "./ReportNav";
 import OpportunityQuadrant from "./charts/OpportunityQuadrant";
@@ -97,12 +98,18 @@ export default function ReportView({
   report,
   onReset,
   analysisInput,
+  reportId,
 }: {
   report: CompetitiveReport;
   onReset?: () => void;
   /** Only present for reports generated via /create — powers the
-   *  "email + auto-subscribe" flow. Absent for the static /demo report. */
+   *  save-to-account banner below. Absent for the static /demo report,
+   *  which never shows a save prompt. */
   analysisInput?: AnalysisInput;
+  /** The `?report=<id>` id this report is cached under in sessionStorage
+   *  (see app/create/page.tsx). Used to de-dupe the save-to-history call
+   *  below so a page refresh on the same report doesn't save it again. */
+  reportId?: string;
 }) {
   const direct = report.competitors.filter((c) => c.category === "Direct");
   const indirect = report.competitors.filter((c) => c.category === "Indirect");
@@ -117,6 +124,76 @@ export default function ReportView({
 
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState("");
+
+  // Save-to-account banner: only relevant for reports generated via
+  // /create (analysisInput present). Checks the session client-side, then
+  // either auto-saves (logged in) or prompts to create an account.
+  const [saveBanner, setSaveBanner] = useState<"none" | "checking" | "saved" | "prompt">("none");
+
+  useEffect(() => {
+    if (!analysisInput) return; // /demo report never shows this banner
+
+    // De-dupe guard: a refresh of /create?report=<id> remounts this
+    // component with analysisInput still set, which would otherwise
+    // re-fire the save-to-history POST below on every refresh (each one
+    // creating a duplicate entry in "Your Reports" — saveReportToHistory
+    // does an unconditional LPUSH with no idempotency key). Persist a
+    // "saved" marker in sessionStorage, keyed by the same report id the
+    // page caches the report under, so it survives the remount and a save
+    // only ever fires once per generated report.
+    const savedKey = reportId ? `cia-report-saved-${reportId}` : null;
+    if (savedKey) {
+      try {
+        if (sessionStorage.getItem(savedKey) === "1") {
+          setSaveBanner("saved");
+          return;
+        }
+      } catch {
+        // sessionStorage unavailable — fall through and check/save as usual
+      }
+    }
+
+    let cancelled = false;
+    setSaveBanner("checking");
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/session");
+        const data = await res.json();
+        if (cancelled) return;
+        if (data.session) {
+          try {
+            await fetch("/api/reports/save", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ report }),
+            });
+            if (savedKey) {
+              try {
+                sessionStorage.setItem(savedKey, "1");
+              } catch {
+                // ignore — worst case a later refresh re-saves
+              }
+            }
+          } catch {
+            // Best-effort — still tell the user they're signed in even if
+            // this particular save call failed; the report itself already
+            // rendered successfully.
+          }
+          if (!cancelled) setSaveBanner("saved");
+        } else {
+          setSaveBanner("prompt");
+        }
+      } catch {
+        if (!cancelled) setSaveBanner("none");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Only ever runs once per generated report (or once more per
+    // reportId, which itself never changes for a mounted report).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportId]);
 
   useEffect(() => {
     return () => {
@@ -175,6 +252,36 @@ export default function ReportView({
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
+      {saveBanner === "saved" && (
+        <div className="no-print mb-8 rounded-xl2 border border-line bg-white p-4 text-sm">
+          <p className="text-ink">
+            <span className="font-medium">Saved to your account.</span>{" "}
+            <span className="text-mist">Find it anytime on your dashboard.</span>
+          </p>
+        </div>
+      )}
+
+      {saveBanner === "prompt" && (
+        <div className="no-print mb-8 rounded-xl2 border border-line bg-white p-4 text-sm">
+          <p className="font-medium text-ink">Want to find this report later?</p>
+          <p className="mt-1 text-mist">Create an account to save it to your dashboard.</p>
+          <div className="mt-3 flex flex-wrap items-center gap-4">
+            <Link
+              href="/signup"
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-card transition hover:bg-accent-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+              Create Account
+            </Link>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-ink underline underline-offset-2 hover:no-underline"
+            >
+              Log In
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8 flex flex-wrap items-start justify-between gap-6 border-b border-line pb-8">
         <div>
@@ -381,7 +488,7 @@ export default function ReportView({
                         <span>{item}</span>
                       </li>
                     ))}
-                  </ul>
+                </ul>
                 </div>
               ))}
             </div>
