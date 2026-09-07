@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReport } from "@/lib/anthropic";
-import { saveSubscription, saveReportToHistory } from "@/lib/store";
+import { saveReportToHistory } from "@/lib/store";
 import type { AnalysisInput } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -38,29 +38,23 @@ export async function POST(req: NextRequest) {
   try {
     const report = await generateReport(body);
 
-    // Best-effort: save the config so the monthly cron job can regenerate
-    // and re-send it later. Never blocks or fails the main request.
-    if (body.monthlyDelivery && body.email) {
-      saveSubscription(body.email, body).catch((err) =>
-        console.error("Failed to save monthly subscription:", err)
-      );
-    }
-
     // Best-effort: as long as an email was given, save this report to that
-    // person's dashboard right away — logging in later should show every
-    // report they've ever generated, not just the ones they explicitly
-    // emailed to themselves.
+    // person's dashboard right away â logging in later should show every
+    // report they've ever generated.
     if (body.email) {
-      saveReportToHistory(body.email, report, {
-        subscribed: Boolean(body.monthlyDelivery),
-        emailed: false,
-      }).catch((err) => console.error("Failed to save report history:", err));
+      saveReportToHistory(body.email, report).catch((err) =>
+        console.error("Failed to save report history:", err)
+      );
     }
 
     return NextResponse.json({ report });
   } catch (err) {
+    // Log the real error server-side, but never forward internal details
+    // (API errors, config problems, etc.) to the client.
     console.error("generate-report failed:", err);
-    const message = err instanceof Error ? err.message : "Failed to generate report.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "We couldn't generate this report right now. Please try again in a moment." },
+      { status: 500 }
+    );
   }
 }
