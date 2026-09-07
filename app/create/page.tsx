@@ -30,6 +30,7 @@ function CreatePageInner() {
   const [lastInput, setLastInput] = useState<AnalysisInput | null>(null);
   const [reportId, setReportId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [errorCode, setErrorCode] = useState<string | undefined>(undefined);
   const [controller, setController] = useState<AbortController | null>(null);
   const [checkedUrl, setCheckedUrl] = useState(false);
 
@@ -57,6 +58,7 @@ function CreatePageInner() {
     setLastInput(input);
     setPhase("generating");
     setErrorMessage("");
+    setErrorCode(undefined);
     const abort = new AbortController();
     setController(abort);
     try {
@@ -67,7 +69,10 @@ function CreatePageInner() {
         signal: abort.signal,
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to generate report.");
+      if (!res.ok) {
+        setErrorCode(data.code);
+        throw new Error(data.error || "Failed to generate report.");
+      }
       const generated = data.report as CompetitiveReport;
       setReport(generated);
       setPhase("report");
@@ -135,7 +140,34 @@ function CreatePageInner() {
 
       {phase === "generating" && <GeneratingState onCancel={handleCancel} />}
 
-      {phase === "error" && (
+      {phase === "error" && errorCode === "missing_api_key" && (
+        <div className="mx-auto flex max-w-md flex-col items-center px-6 py-28 text-center">
+          <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-threat-high/10">
+            <span className="text-2xl text-threat-high">!</span>
+          </div>
+          <h2 className="text-xl font-semibold text-ink">Connect an Anthropic API key</h2>
+          <p className="mt-2 text-sm text-mist">{errorMessage}</p>
+          <p className="mt-3 max-w-sm text-xs text-mist">
+            Clone the repo and add your own key — it only takes a couple of minutes.
+          </p>
+          <a
+            href="https://github.com/ReshmikaD/competitive-intelligence-agent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 rounded-lg bg-ink px-5 py-2.5 text-sm font-medium text-white transition hover:bg-ink/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          >
+            See how on GitHub →
+          </a>
+          <button
+            onClick={() => setPhase("form")}
+            className="mt-4 text-xs text-mist underline underline-offset-2 hover:text-ink"
+          >
+            Back to the form
+          </button>
+        </div>
+      )}
+
+      {phase === "error" && errorCode !== "missing_api_key" && (
         <div className="mx-auto flex max-w-md flex-col items-center px-6 py-28 text-center">
           <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-threat-high/10">
             <span className="text-2xl text-threat-high">!</span>
