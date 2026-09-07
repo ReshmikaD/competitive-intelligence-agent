@@ -13,12 +13,12 @@ export default function Hero() {
           </div>
 
           <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-5xl">
-            Competitor research, done for you
+            Competitor intelligence, without the busywork.
           </h1>
 
           <p className="mt-6 max-w-lg text-balance text-lg leading-relaxed text-mist">
-            A clear, decision-ready report on your competitors — in minutes,
-            built from real research, not a guess.
+            Research your competitors in minutes and get a clear,
+            decision-ready report built from real sources, not assumptions.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">

@@ -9,7 +9,7 @@ export default function Nav() {
         <a href="#top" className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
           <Logo />
           <span className="font-mono text-[13px] font-medium tracking-tight text-ink">
-            Competitive Intelligence Agent
+            Scout AI
           </span>
         </a>
 
