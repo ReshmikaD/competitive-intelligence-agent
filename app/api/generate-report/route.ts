@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateReport } from "@/lib/anthropic";
+import { generateReport, ApiKeyError } from "@/lib/anthropic";
 import type { AnalysisInput } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -47,6 +47,17 @@ export async function POST(req: NextRequest) {
     // Log the real error server-side, but never forward internal details
     // (API errors, config problems, etc.) to the client.
     console.error("generate-report failed:", err);
+
+    if (err instanceof ApiKeyError) {
+      return NextResponse.json(
+        {
+          error: "This deployment doesn't have an active Anthropic API key connected.",
+          code: "missing_api_key",
+        },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
       { error: "We couldn't generate this report right now. Please try again in a moment." },
       { status: 500 }
