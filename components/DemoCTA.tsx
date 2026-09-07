@@ -26,6 +26,18 @@ export default function DemoCTA() {
             Browse the Sample Report
           </Link>
         </div>
+        <p className="mt-8 text-sm text-white/40">
+          Want to run this after the demo period? This project is open source —{" "}
+          <a
+            href="https://github.com/ReshmikaD/competitive-intelligence-agent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/70 underline underline-offset-2 hover:text-white"
+          >
+            clone the repo and add your own Anthropic API key
+          </a>{" "}
+          to run it on your own machine.
+        </p>
       </div>
     </section>
   );
