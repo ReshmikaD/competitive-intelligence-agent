@@ -28,6 +28,7 @@ function CreatePageInner() {
   const [phase, setPhase] = useState<Phase>("form");
   const [report, setReport] = useState<CompetitiveReport | null>(null);
   const [lastInput, setLastInput] = useState<AnalysisInput | null>(null);
+  const [reportId, setReportId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [controller, setController] = useState<AbortController | null>(null);
   const [checkedUrl, setCheckedUrl] = useState(false);
@@ -44,6 +45,7 @@ function CreatePageInner() {
         const parsed = JSON.parse(raw) as { report: CompetitiveReport; input: AnalysisInput | null };
         setReport(parsed.report);
         setLastInput(parsed.input);
+        setReportId(id);
         setPhase("report");
       }
     } catch {
@@ -71,6 +73,7 @@ function CreatePageInner() {
       setPhase("report");
 
       const id = crypto.randomUUID();
+      setReportId(id);
       try {
         sessionStorage.setItem(
           `cia-report-${id}`,
@@ -101,6 +104,7 @@ function CreatePageInner() {
   function handleReset() {
     setReport(null);
     setLastInput(null);
+    setReportId(null);
     setPhase("form");
     const url = new URL(window.location.href);
     url.searchParams.delete("report");
@@ -151,7 +155,12 @@ function CreatePageInner() {
       )}
 
       {phase === "report" && report && (
-        <ReportView report={report} onReset={handleReset} analysisInput={lastInput ?? undefined} />
+        <ReportView
+          report={report}
+          onReset={handleReset}
+          analysisInput={lastInput ?? undefined}
+          reportId={reportId ?? undefined}
+        />
       )}
     </main>
   );
