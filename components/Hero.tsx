@@ -13,7 +13,7 @@ export default function Hero() {
           </div>
 
           <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-5xl">
-            Competitor intelligence, without the busywork.
+            Your competitive landscape, researched in minutes.
           </h1>
 
           <p className="mt-6 max-w-lg text-balance text-lg leading-relaxed text-mist">
