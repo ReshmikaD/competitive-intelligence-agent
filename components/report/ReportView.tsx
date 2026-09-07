@@ -488,7 +488,7 @@ export default function ReportView({
                         <span>{item}</span>
                       </li>
                     ))}
-                </ul>
+                  </ul>
                 </div>
               ))}
             </div>
