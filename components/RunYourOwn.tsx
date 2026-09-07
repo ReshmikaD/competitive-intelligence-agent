@@ -1,17 +1,17 @@
 export default function RunYourOwn() {
   return (
-    <section id="run-your-own" className="border-t border-line bg-white py-24">
+    <section id="get-started" className="border-t border-line bg-white py-24">
       <div className="mx-auto max-w-6xl px-6">
         <div className="max-w-2xl">
           <p className="font-mono text-xs font-medium uppercase tracking-wider text-accent">
             Getting started
           </p>
           <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            How to actually use this.
+            Two ways to get started.
           </h2>
           <p className="mt-4 text-mist">
-            There&apos;s no shared backend here and no account system holding your data —
-            every deployment runs on its own Anthropic API key.
+            No signup required to look around, and no setup required to run your own
+            analysis.
           </p>
         </div>
 
@@ -19,28 +19,27 @@ export default function RunYourOwn() {
           <div className="rounded-xl2 border border-line bg-paper p-6">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 font-mono text-[11px] font-medium text-accent-dark">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              No key needed
+              No signup needed
             </span>
             <h3 className="mt-4 text-lg font-semibold text-ink">Look at a sample first</h3>
             <p className="mt-2 text-sm leading-relaxed text-mist">
               The sample report is real output from this exact tool, laid out exactly
               like the one you&apos;d get — read it right on the page, or open it as a
-              polished PDF, before you set anything up.
+              polished PDF, before you run anything yourself.
             </p>
           </div>
 
           <div className="rounded-xl2 border border-line bg-paper p-6">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-ink/5 px-2.5 py-1 font-mono text-[11px] font-medium text-ink">
               <span className="h-1.5 w-1.5 rounded-full bg-ink" />
-              Bring your own key
+              Two minutes
             </span>
             <h3 className="mt-4 text-lg font-semibold text-ink">Run it on your own product</h3>
             <p className="mt-2 text-sm leading-relaxed text-mist">
-              Clone the repo, drop in your own Anthropic API key (and Gmail if you want
-              email delivery), and deploy it to Vercel — a few minutes, and it&apos;s
-              running under your account with your key. Every report you generate with
-              an email attached is saved to your own dashboard, so you can log back in
-              and find it later. Steps are in the README.
+              Tell us about your product, industry, target customers, and any competitors
+              you already know about. We&apos;ll research the rest and hand you a full
+              report — add your email and it&apos;s saved to your dashboard, so you can
+              log back in and find it later.
             </p>
           </div>
         </div>

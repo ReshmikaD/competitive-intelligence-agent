@@ -20,7 +20,7 @@ export default function Hero() {
             Tell it your product, industry, target customers, and known
             competitors. It reads their actual websites, TechCrunch, and
             industry news, then hands you a clear, decision-ready report in
-            minutes — once, or automatically every month.
+            minutes.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -45,7 +45,7 @@ export default function Hero() {
           <div className="rounded-xl2 border border-line bg-white p-5 shadow-cardHover">
             <div className="flex items-center justify-between border-b border-line pb-3">
               <div>
-                <p className="text-xs font-medium text-mist">Monthly Report</p>
+                <p className="text-xs font-medium text-mist">Latest Report</p>
                 <p className="font-mono text-sm font-medium text-ink">PulseCRM &middot; June 2026</p>
               </div>
               <span className="rounded-full bg-threat-high/10 px-2.5 py-1 text-[11px] font-medium text-threat-high">

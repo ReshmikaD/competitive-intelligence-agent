@@ -9,8 +9,8 @@ export default function DemoCTA() {
           See it in action.
         </h2>
         <p className="mt-4 text-balance text-white/60">
-          Run a live analysis on your own product, powered by Claude — or browse a full
-          sample report first. No signup, no card, no waiting.
+          Run a live analysis on your own product, or browse a full sample report first.
+          No signup, no card, no waiting.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
           <Link

@@ -1,26 +1,17 @@
 import crypto from "crypto";
-import { kvSet, kvGet, kvDel, isConfigured } from "./store";
+import { isConfigured } from "./store";
 
 // Hand-rolled, dependency-free auth: no NextAuth/Auth.js, consistent with
-// the rest of this codebase's "small, explicit, no framework you didn't
-// choose" style. There's no signup step and no password — whoever can
-// click the link sent to an inbox controls that inbox's report history,
-// which is the same trust model as "email me the report" already used.
+// the rest of this codebase's "small, explicit" style. There's no password
+// and no verification email — entering an email creates a signed session
+// for it immediately, and that session gates access to that email's own
+// report history. This trades a stronger identity guarantee for a login
+// that never leaves the app: nothing is ever sent or received over email.
 //
-// Two building blocks:
-// 1. Single-use login/unsubscribe tokens: random, opaque, stored in
-//    Upstash with a TTL, looked up once and deleted. Requires Upstash to
-//    be configured — login and the report feed are optional, Upstash-
-//    backed features layered on top of the core (API-key-only) product.
-// 2. The session cookie itself: signed with SESSION_SECRET so it can be
-//    verified on every request without a database round trip.
-
-const LOGIN_TOKEN_PREFIX = "cia:login-token:";
-const LOGIN_TOKEN_TTL_SECONDS = 15 * 60; // 15 minutes
-
-const UNSUB_TOKEN_PREFIX = "cia:unsub-token:";
-// No expiry set on unsubscribe tokens — they're mailed out and may sit
-// unread for a while; someone should always be able to unsubscribe.
+// The session cookie is signed with SESSION_SECRET so it can be verified
+// on every request without a database round trip. Login itself only needs
+// Upstash (via isConfigured) to be available so the report history it
+// unlocks actually has something to show.
 
 export const SESSION_COOKIE_NAME = "cia_session";
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
@@ -43,48 +34,6 @@ function base64url(input: Buffer | string): string {
 
 function sign(payload: string): string {
   return crypto.createHmac("sha256", getSessionSecret()).update(payload).digest("base64url");
-}
-
-// --- login tokens (magic link) ---
-
-export async function createLoginToken(email: string): Promise<string> {
-  const token = crypto.randomBytes(24).toString("base64url");
-  await kvSet(LOGIN_TOKEN_PREFIX + token, email.toLowerCase(), LOGIN_TOKEN_TTL_SECONDS);
-  return token;
-}
-
-/** Single-use: returns the email once, then the token is dead. */
-export async function consumeLoginToken(token: string): Promise<string | null> {
-  const email = await kvGet(LOGIN_TOKEN_PREFIX + token);
-  if (!email) return null;
-  await kvDel(LOGIN_TOKEN_PREFIX + token);
-  return email;
-}
-
-// --- unsubscribe tokens (one-click, no login required, embedded in every email) ---
-
-interface UnsubTarget {
-  email: string;
-  productName: string;
-}
-
-export async function createUnsubscribeToken(target: UnsubTarget): Promise<string> {
-  const token = crypto.randomBytes(24).toString("base64url");
-  await kvSet(UNSUB_TOKEN_PREFIX + token, JSON.stringify(target));
-  return token;
-}
-
-/** Not single-use on purpose — someone might click an old email's link
- *  twice, or a mail client might "prefetch" the link once already. Both
- *  should just land on the same "you're unsubscribed" confirmation. */
-export async function resolveUnsubscribeToken(token: string): Promise<UnsubTarget | null> {
-  const raw = await kvGet(UNSUB_TOKEN_PREFIX + token);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as UnsubTarget;
-  } catch {
-    return null;
-  }
 }
 
 // --- session cookie ---

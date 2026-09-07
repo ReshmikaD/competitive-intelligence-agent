@@ -139,8 +139,7 @@ function CreatePageInner() {
           <h2 className="text-xl font-semibold text-ink">Something went wrong</h2>
           <p className="mt-2 text-sm text-mist">{errorMessage}</p>
           <p className="mt-3 max-w-sm text-xs text-mist">
-            If this mentions an API key or authentication, double-check ANTHROPIC_API_KEY is set
-            correctly in your environment.
+            This is usually temporary — please try again in a moment.
           </p>
           <button
             onClick={() => setPhase("form")}

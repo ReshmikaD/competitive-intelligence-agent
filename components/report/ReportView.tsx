@@ -392,7 +392,7 @@ export default function ReportView({
             <SectionHeading
               eyebrow="Appendix"
               title="Where This Came From"
-              caption="Real pages Claude actually read while researching this report — not general knowledge."
+              caption="Real pages actually read while researching this report — not general knowledge."
             />
             {report.sources.length === 0 ? (
               <p className="text-sm text-mist">No external sources were recorded for this report.</p>

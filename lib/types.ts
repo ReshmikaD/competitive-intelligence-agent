@@ -8,7 +8,6 @@ export interface AnalysisInput {
   targetCustomers: string[];
   knownCompetitors: string[];
   email?: string;
-  monthlyDelivery?: boolean;
 }
 
 export interface Source {

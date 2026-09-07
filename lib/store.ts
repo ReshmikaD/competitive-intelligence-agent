@@ -1,16 +1,11 @@
-import type { AnalysisInput, CompetitiveReport } from "./types";
+import type { CompetitiveReport } from "./types";
 
 // Persistence backed by Upstash Redis (Vercel's recommended KV
-// integration). Everything here is a graceful no-op if the integration
-// isn't configured, so report generation and one-off emailing still work
-// without it — this only powers monthly automation, the account feed
-// (report history), and login. See README for setup.
+// integration). Report generation itself never depends on this — it only
+// powers the account feed (report history) and login. See README for setup.
 
-const SUB_PREFIX = "cia:sub:"; // cia:sub:<email>:<productSlug> -> Subscription
-const SUB_BY_EMAIL_PREFIX = "cia:subs-by-email:"; // set of sub keys for one email
-const SUB_INDEX = "cia:subs-index"; // set of every sub key, for the cron fan-out
 const HISTORY_PREFIX = "cia:history:"; // cia:history:<email> -> list of HistoryEntry (newest first)
-const HISTORY_LIMIT = 24; // ~2 years of monthly reports per person, keeps storage bounded
+const HISTORY_LIMIT = 50; // keeps storage bounded
 
 export function isConfigured(): boolean {
   return Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
@@ -31,120 +26,25 @@ async function redisFetch(command: unknown[]) {
   return res.json();
 }
 
-// --- generic KV helpers (also used by lib/auth.ts for login/unsubscribe tokens) ---
-
-export async function kvSet(key: string, value: string, exSeconds?: number): Promise<void> {
-  if (!isConfigured()) return;
-  const command = exSeconds ? ["SET", key, value, "EX", String(exSeconds)] : ["SET", key, value];
-  await redisFetch(command);
-}
-
-export async function kvGet(key: string): Promise<string | null> {
-  if (!isConfigured()) return null;
-  const res = await redisFetch(["GET", key]);
-  return res.result ?? null;
-}
-
-export async function kvDel(key: string): Promise<void> {
-  if (!isConfigured()) return;
-  await redisFetch(["DEL", key]);
-}
-
-function slugify(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "product";
-}
-
-export interface Subscription {
-  input: AnalysisInput;
-  email: string;
-  savedAt: string;
-}
-
-function subKey(email: string, productName: string): string {
-  return `${SUB_PREFIX}${email.toLowerCase()}:${slugify(productName)}`;
-}
-
-/** Save (or overwrite) the config to re-run monthly for this email + product.
- *  A single email can track several products — each gets its own subscription. */
-export async function saveSubscription(email: string, input: AnalysisInput): Promise<void> {
-  if (!isConfigured()) return; // silently skip — monthly automation is opt-in infra
-  const key = subKey(email, input.productName);
-  const value: Subscription = { input, email, savedAt: new Date().toISOString() };
-  await redisFetch(["SET", key, JSON.stringify(value)]);
-  await redisFetch(["SADD", SUB_BY_EMAIL_PREFIX + email.toLowerCase(), key]);
-  await redisFetch(["SADD", SUB_INDEX, key]);
-}
-
-export async function removeSubscription(email: string, productName: string): Promise<void> {
-  if (!isConfigured()) return;
-  const key = subKey(email, productName);
-  await redisFetch(["DEL", key]);
-  await redisFetch(["SREM", SUB_BY_EMAIL_PREFIX + email.toLowerCase(), key]);
-  await redisFetch(["SREM", SUB_INDEX, key]);
-}
-
-/** Used by the monthly cron job to fan out to every saved subscription, across all users. */
-export async function listSubscriptions(): Promise<Subscription[]> {
-  if (!isConfigured()) return [];
-  const indexRes = await redisFetch(["SMEMBERS", SUB_INDEX]);
-  const keys: string[] = indexRes.result || [];
-  return fetchSubscriptionsByKeys(keys);
-}
-
-/** Used by the /account feed to show one person's active subscriptions. */
-export async function listSubscriptionsForEmail(email: string): Promise<Subscription[]> {
-  if (!isConfigured()) return [];
-  const indexRes = await redisFetch(["SMEMBERS", SUB_BY_EMAIL_PREFIX + email.toLowerCase()]);
-  const keys: string[] = indexRes.result || [];
-  return fetchSubscriptionsByKeys(keys);
-}
-
-async function fetchSubscriptionsByKeys(keys: string[]): Promise<Subscription[]> {
-  const subs: Subscription[] = [];
-  for (const key of keys) {
-    const res = await redisFetch(["GET", key]);
-    if (res.result) {
-      try {
-        subs.push(JSON.parse(res.result));
-      } catch {
-        // skip malformed entries
-      }
-    }
-  }
-  return subs;
-}
-
-export const monthlyAutomationEnabled = isConfigured;
-
-// --- report history (the "feed" on /account) ---
+// --- report history (the feed on /account) ---
 
 export interface HistoryEntry {
   report: CompetitiveReport;
   createdAt: string;
-  /** True once this exact report has actually been emailed (one-off send
-   *  or monthly delivery). False for entries saved purely because the
-   *  person generated a report with an email attached — every generated
-   *  report shows up in the dashboard whether or not it was ever sent. */
-  emailed: boolean;
-  subscribed: boolean;
 }
 
-/** Add an entry to this email's /account feed. Called any time a report
- *  should show up there: right after generation (if an email was given),
- *  after a one-off "email this report" send, and after every monthly cron
- *  delivery. Every call is best-effort and never blocks the caller. */
+/** Add an entry to this email's /account feed. Called right after
+ *  generation, whenever the person provided an email. Best-effort and
+ *  never blocks the caller. */
 export async function saveReportToHistory(
   email: string,
-  report: CompetitiveReport,
-  opts: { subscribed: boolean; emailed: boolean }
+  report: CompetitiveReport
 ): Promise<void> {
   if (!isConfigured()) return;
   const key = HISTORY_PREFIX + email.toLowerCase();
   const entry: HistoryEntry = {
     report,
     createdAt: new Date().toISOString(),
-    emailed: opts.emailed,
-    subscribed: opts.subscribed,
   };
   await redisFetch(["LPUSH", key, JSON.stringify(entry)]);
   await redisFetch(["LTRIM", key, "0", String(HISTORY_LIMIT - 1)]);

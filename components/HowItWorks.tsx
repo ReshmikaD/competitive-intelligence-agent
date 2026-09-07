@@ -6,13 +6,13 @@ const steps = [
   },
   {
     n: "02",
-    title: "Claude goes and actually looks",
-    body: "It searches and reads competitor websites, TechCrunch, and industry news in real time — not a guess based on old training data.",
+    title: "We go and actually look",
+    body: "We search and read competitor websites, TechCrunch, and industry news in real time — not a guess based on old training data.",
   },
   {
     n: "03",
     title: "Read it right on the page",
-    body: "Your report opens in a clean, scannable view — save it as a PDF whenever you want, or set up monthly delivery straight to your inbox.",
+    body: "Your report opens in a clean, scannable view — save it as a PDF whenever you want, or come back to it anytime from your dashboard.",
   },
   {
     n: "04",

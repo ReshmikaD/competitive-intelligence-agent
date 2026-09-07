@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Competitive Intelligence Agent — competitor research for Product Managers",
   description:
-    "Competitive Intelligence Agent turns scattered market signals into a monthly report that tells you what changed, why it matters, and what to do next.",
+    "Competitive Intelligence Agent turns scattered market signals into a clear report that tells you what changed, why it matters, and what to do next.",
   openGraph: {
     title: "Competitive Intelligence Agent",
     description:

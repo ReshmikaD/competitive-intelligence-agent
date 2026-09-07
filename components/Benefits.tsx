@@ -16,13 +16,13 @@ const benefits = [
     body: "Back roadmap decisions with a current view of the market.",
   },
   {
-    title: "Subscribe, don't repeat yourself",
-    body: "Turn on monthly delivery once, and a fresh report lands in your inbox automatically — no need to re-run it.",
+    title: "Come back anytime",
+    body: "Every report you generate is saved to your dashboard — log back in and pick up right where you left off.",
     highlight: true,
   },
   {
-    title: "Your data, your API key",
-    body: "Runs on your own Claude API key, so nothing about your product or competitors is shared with us.",
+    title: "Your data stays yours",
+    body: "Nothing about your product or competitors is shared with anyone else.",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function Benefits() {
                 {b.title}
                 {b.highlight && (
                   <span className="rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-medium text-white">
-                    Monthly
+                    Dashboard
                   </span>
                 )}
               </h3>

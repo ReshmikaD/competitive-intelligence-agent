@@ -6,7 +6,7 @@ import { sampleReport } from "@/lib/sampleReport";
 // Renders the fixed sample data through the exact same report experience a
 // real /create analysis produces — same layout, same "View as PDF" button
 // up top — so a visitor gets a true feel for the product before ever
-// touching their own API key. (The raw PDF is still reachable directly at
+// running their own analysis. (The raw PDF is still reachable directly at
 // /api/sample-report-pdf for anyone who wants just the file.)
 export default function DemoPage() {
   return (

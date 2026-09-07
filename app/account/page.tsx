@@ -4,7 +4,7 @@ import Link from "next/link";
 import Logo from "@/components/Logo";
 import AccountFeed from "@/components/account/AccountFeed";
 import { SESSION_COOKIE_NAME, verifySessionCookieValue } from "@/lib/auth";
-import { listSubscriptionsForEmail, listReportHistory } from "@/lib/store";
+import { listReportHistory } from "@/lib/store";
 
 export default async function AccountPage() {
   const cookieStore = await cookies();
@@ -14,10 +14,7 @@ export default async function AccountPage() {
     redirect("/login");
   }
 
-  const [subscriptions, history] = await Promise.all([
-    listSubscriptionsForEmail(email),
-    listReportHistory(email),
-  ]);
+  const history = await listReportHistory(email);
 
   return (
     <main className="min-h-screen bg-paper">
@@ -38,7 +35,7 @@ export default async function AccountPage() {
         </div>
       </header>
 
-      <AccountFeed email={email} subscriptions={subscriptions} history={history} />
+      <AccountFeed email={email} history={history} />
     </main>
   );
 }
