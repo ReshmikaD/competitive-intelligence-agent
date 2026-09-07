@@ -24,7 +24,7 @@ export default async function AccountPage() {
           <Link href="/" className="flex items-center gap-2.5">
             <Logo />
             <span className="text-sm font-semibold tracking-tight text-ink">
-              Scout AI
+              ScoutAI
             </span>
           </Link>
           <Link
