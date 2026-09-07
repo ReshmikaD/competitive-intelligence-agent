@@ -4,6 +4,20 @@ import type { AnalysisInput, CompetitiveReport, Source } from "./types";
 // Model string — update if your account uses a different alias.
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
 
+/** Thrown when there's no usable Anthropic API key — either none is set,
+ *  or Anthropic rejected it as invalid/expired. The API route maps this to
+ *  a distinct error code so the UI can point people at the GitHub setup
+ *  instructions instead of showing a generic failure. */
+export class ApiKeyError extends Error {
+  code = "missing_api_key" as const;
+}
+
+function isAuthError(err: unknown): boolean {
+  if (err instanceof Anthropic.AuthenticationError) return true;
+  const status = (err as { status?: number } | null)?.status;
+  return status === 401;
+}
+
 const levelEnum = ["High", "Medium", "Low"];
 
 // Strict JSON schema the model must fill in via forced tool use, once real
@@ -207,8 +221,8 @@ function extractSources(content: unknown, seen: Map<string, Source>): void {
 export async function generateReport(input: AnalysisInput): Promise<CompetitiveReport> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    throw new Error(
-      "ANTHROPIC_API_KEY is not set. Add it to your environment variables (see .env.example)."
+    throw new ApiKeyError(
+      "No Anthropic API key is configured. Add ANTHROPIC_API_KEY to your environment (see .env.example)."
     );
   }
 
@@ -217,21 +231,29 @@ export async function generateReport(input: AnalysisInput): Promise<CompetitiveR
   // Phase 1: real research. Claude uses web_search + web_fetch (server-side
   // tools — Anthropic runs them and hands the results back in this same
   // call) to actually browse competitor sites, TechCrunch, etc.
-  const researchResponse = await client.messages.create({
-    model: MODEL,
-    max_tokens: 8000,
-    tools: [
-      { type: "web_search_20250305", name: "web_search", max_uses: 10 },
-      {
-        type: "web_fetch_20250910",
-        name: "web_fetch",
-        max_uses: 10,
-        citations: { enabled: true },
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any,
-    messages: [{ role: "user", content: buildResearchPrompt(input) }],
-  });
+  let researchResponse;
+  try {
+    researchResponse = await client.messages.create({
+      model: MODEL,
+      max_tokens: 8000,
+      tools: [
+        { type: "web_search_20250305", name: "web_search", max_uses: 10 },
+        {
+          type: "web_fetch_20250910",
+          name: "web_fetch",
+          max_uses: 10,
+          citations: { enabled: true },
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ] as any,
+      messages: [{ role: "user", content: buildResearchPrompt(input) }],
+    });
+  } catch (err) {
+    if (isAuthError(err)) {
+      throw new ApiKeyError("Anthropic rejected this API key. Check that it's valid and active.");
+    }
+    throw err;
+  }
 
   const researchBrief = researchResponse.content
     .filter((block): block is Anthropic.TextBlock => block.type === "text")
@@ -247,13 +269,21 @@ export async function generateReport(input: AnalysisInput): Promise<CompetitiveR
 
   // Phase 2: convert the research into the guaranteed JSON shape the UI
   // and PDF renderer expect, via forced tool use.
-  const extractionResponse = await client.messages.create({
-    model: MODEL,
-    max_tokens: 8000,
-    tools: [REPORT_TOOL],
-    tool_choice: { type: "tool", name: "generate_competitive_report" },
-    messages: [{ role: "user", content: buildExtractionPrompt(input, researchBrief) }],
-  });
+  let extractionResponse;
+  try {
+    extractionResponse = await client.messages.create({
+      model: MODEL,
+      max_tokens: 8000,
+      tools: [REPORT_TOOL],
+      tool_choice: { type: "tool", name: "generate_competitive_report" },
+      messages: [{ role: "user", content: buildExtractionPrompt(input, researchBrief) }],
+    });
+  } catch (err) {
+    if (isAuthError(err)) {
+      throw new ApiKeyError("Anthropic rejected this API key. Check that it's valid and active.");
+    }
+    throw err;
+  }
 
   const toolUse = extractionResponse.content.find(
     (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
