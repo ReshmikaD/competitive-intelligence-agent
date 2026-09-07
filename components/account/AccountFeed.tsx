@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { Subscription, HistoryEntry } from "@/lib/store";
+import type { HistoryEntry } from "@/lib/store";
 
 function useViewPdf() {
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
@@ -30,39 +30,18 @@ function useViewPdf() {
 
 export default function AccountFeed({
   email,
-  subscriptions,
   history,
 }: {
   email: string;
-  subscriptions: Subscription[];
   history: HistoryEntry[];
 }) {
   const router = useRouter();
-  const [subs, setSubs] = useState(subscriptions);
-  const [unsubscribing, setUnsubscribing] = useState<string | null>(null);
   const { loadingKey, viewPdf } = useViewPdf();
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
     router.refresh();
-  }
-
-  async function handleUnsubscribe(productName: string) {
-    setUnsubscribing(productName);
-    try {
-      const res = await fetch("/api/account/unsubscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productName }),
-      });
-      if (!res.ok) throw new Error();
-      setSubs((prev) => prev.filter((s) => s.input.productName !== productName));
-    } catch {
-      alert("Couldn't unsubscribe. Try again.");
-    } finally {
-      setUnsubscribing(null);
-    }
   }
 
   return (
@@ -80,52 +59,13 @@ export default function AccountFeed({
         </button>
       </div>
 
-      {/* Active subscriptions */}
-      <section className="mb-12">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-mistStrong">
-          Active Subscriptions
-        </h2>
-        {subs.length === 0 ? (
-          <p className="rounded-xl2 border border-line bg-white p-5 text-sm text-mist">
-            No active monthly subscriptions. Generate a report and check "send me this every
-            month" to start one.
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {subs.map((s) => (
-              <div
-                key={s.input.productName}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl2 border border-line bg-white p-4"
-              >
-                <div>
-                  <p className="text-sm font-semibold text-ink">{s.input.productName}</p>
-                  <p className="text-xs text-mist">
-                    {s.input.industry.join(", ")} &middot; subscribed since{" "}
-                    {new Date(s.savedAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleUnsubscribe(s.input.productName)}
-                  disabled={unsubscribing === s.input.productName}
-                  className="rounded-lg border border-line px-3 py-1.5 text-xs font-medium text-mist transition hover:border-threat-high/40 hover:text-threat-high disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                >
-                  {unsubscribing === s.input.productName ? "Unsubscribing…" : "Unsubscribe"}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Report feed */}
       <section>
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-mistStrong">
           Your Reports
         </h2>
         {history.length === 0 ? (
           <p className="rounded-xl2 border border-line bg-white p-5 text-sm text-mist">
-            Every report you generate with this email will show up here — you don&apos;t
-            need to email it to yourself first.
+            Every report you generate with this email will show up here.
           </p>
         ) : (
           <div className="space-y-3">
@@ -141,16 +81,6 @@ export default function AccountFeed({
                     <p className="text-xs text-mist">
                       {entry.report.reportPeriod} &middot; generated{" "}
                       {new Date(entry.createdAt).toLocaleDateString()}
-                      {entry.emailed && (
-                        <span className="ml-2 rounded-full bg-ink/5 px-2 py-0.5 text-[10px] font-medium text-ink">
-                          Emailed
-                        </span>
-                      )}
-                      {entry.subscribed && (
-                        <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-medium text-accent-dark">
-                          Monthly
-                        </span>
-                      )}
                     </p>
                   </div>
                   <button
