@@ -8,12 +8,13 @@ import { listReportHistory } from "@/lib/store";
 
 export default async function AccountPage() {
   const cookieStore = await cookies();
-  const email = verifySessionCookieValue(cookieStore.get(SESSION_COOKIE_NAME)?.value);
+  const session = verifySessionCookieValue(cookieStore.get(SESSION_COOKIE_NAME)?.value);
 
-  if (!email) {
+  if (!session) {
     redirect("/login");
   }
 
+  const { email, firstName } = session;
   const history = await listReportHistory(email);
 
   return (
@@ -35,7 +36,7 @@ export default async function AccountPage() {
         </div>
       </header>
 
-      <AccountFeed email={email} history={history} />
+      <AccountFeed email={email} firstName={firstName} history={history} />
     </main>
   );
 }
