@@ -11,7 +11,7 @@ export function isConfigured(): boolean {
   return Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
 }
 
-async function redisFetch(command: unknown[]) {
+export async function redisFetch(command: unknown[]) {
   const url = process.env.UPSTASH_REDIS_REST_URL!;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN!;
   const res = await fetch(url, {

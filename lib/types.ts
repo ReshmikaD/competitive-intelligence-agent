@@ -7,7 +7,6 @@ export interface AnalysisInput {
   industry: string[];
   targetCustomers: string[];
   knownCompetitors: string[];
-  email?: string;
 }
 
 export interface Source {

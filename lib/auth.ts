@@ -2,16 +2,16 @@ import crypto from "crypto";
 import { isConfigured } from "./store";
 
 // Hand-rolled, dependency-free auth: no NextAuth/Auth.js, consistent with
-// the rest of this codebase's "small, explicit" style. There's no password
-// and no verification email — entering an email creates a signed session
-// for it immediately, and that session gates access to that email's own
-// report history. This trades a stronger identity guarantee for a login
-// that never leaves the app: nothing is ever sent or received over email.
+// the rest of this codebase's "small, explicit" style. Accounts are
+// email + password (see lib/users.ts for storage and hashing), but there is
+// still no verification email and no email-based password recovery —
+// nothing is ever sent or received over email anywhere in this flow.
 //
 // The session cookie is signed with SESSION_SECRET so it can be verified
-// on every request without a database round trip. Login itself only needs
-// Upstash (via isConfigured) to be available so the report history it
-// unlocks actually has something to show.
+// on every request without a database round trip. It carries just enough
+// ({ email, firstName }) to render the account greeting without an extra
+// lookup. Login/signup itself only needs Upstash (via isConfigured) to be
+// available so accounts and report history actually have somewhere to live.
 
 export const SESSION_COOKIE_NAME = "cia_session";
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
@@ -38,14 +38,24 @@ function sign(payload: string): string {
 
 // --- session cookie ---
 
-export function createSessionCookieValue(email: string): string {
-  const exp = Date.now() + SESSION_TTL_SECONDS * 1000;
-  const payload = base64url(JSON.stringify({ email: email.toLowerCase(), exp }));
-  const signature = sign(payload);
-  return `${payload}.${signature}`;
+/** What the signed session cookie carries. Deliberately excludes the
+ *  password/hash — just enough to render the account greeting without an
+ *  extra database lookup. */
+export interface SessionPayload {
+  email: string;
+  firstName: string;
 }
 
-export function verifySessionCookieValue(value: string | undefined | null): string | null {
+export function createSessionCookieValue(payload: SessionPayload): string {
+  const exp = Date.now() + SESSION_TTL_SECONDS * 1000;
+  const data = base64url(
+    JSON.stringify({ email: payload.email.toLowerCase(), firstName: payload.firstName, exp })
+  );
+  const signature = sign(data);
+  return `${data}.${signature}`;
+}
+
+export function verifySessionCookieValue(value: string | undefined | null): SessionPayload | null {
   if (!value) return null;
   const [payload, signature] = value.split(".");
   if (!payload || !signature) return null;
@@ -64,9 +74,18 @@ export function verifySessionCookieValue(value: string | undefined | null): stri
   }
 
   try {
-    const { email, exp } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    if (typeof email !== "string" || typeof exp !== "number" || Date.now() > exp) return null;
-    return email;
+    const { email, firstName, exp } = JSON.parse(
+      Buffer.from(payload, "base64url").toString("utf8")
+    );
+    if (
+      typeof email !== "string" ||
+      typeof firstName !== "string" ||
+      typeof exp !== "number" ||
+      Date.now() > exp
+    ) {
+      return null;
+    }
+    return { email, firstName };
   } catch {
     return null;
   }
