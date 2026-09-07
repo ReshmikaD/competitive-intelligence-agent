@@ -30,9 +30,11 @@ function useViewPdf() {
 
 export default function AccountFeed({
   email,
+  firstName,
   history,
 }: {
   email: string;
+  firstName: string;
   history: HistoryEntry[];
 }) {
   const router = useRouter();
@@ -48,8 +50,8 @@ export default function AccountFeed({
     <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-10 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-xs uppercase tracking-wide text-mist">Signed in as</p>
-          <h1 className="text-xl font-semibold text-ink">{email}</h1>
+          <p className="font-mono text-xs text-mist">{email}</p>
+          <h1 className="text-xl font-semibold text-ink">Hey {firstName}!</h1>
         </div>
         <button
           onClick={handleLogout}
@@ -65,7 +67,7 @@ export default function AccountFeed({
         </h2>
         {history.length === 0 ? (
           <p className="rounded-xl2 border border-line bg-white p-5 text-sm text-mist">
-            Every report you generate with this email will show up here.
+            Every report you generate will show up here.
           </p>
         ) : (
           <div className="space-y-3">
