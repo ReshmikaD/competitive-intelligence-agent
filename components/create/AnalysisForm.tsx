@@ -71,7 +71,6 @@ export default function AnalysisForm({
   const [industry, setIndustry] = useState<string[]>([]);
   const [targetCustomers, setTargetCustomers] = useState<string[]>([]);
   const [knownCompetitors, setKnownCompetitors] = useState<string[]>([]);
-  const [email, setEmail] = useState("");
 
   const valid =
     productName.trim().length > 0 &&
@@ -94,7 +93,6 @@ export default function AnalysisForm({
       industry,
       targetCustomers,
       knownCompetitors,
-      email: email.trim() || undefined,
     });
   }
 
@@ -163,30 +161,13 @@ export default function AnalysisForm({
           />
         </div>
 
-        <div className="rounded-lg border border-line bg-paper p-4">
-          <label className="mb-1.5 block text-sm font-medium text-ink">
-            Email address <span className="font-normal text-mist">(optional)</span>
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
-            className="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-          />
-          <p className="mt-2 text-xs text-mist">
-            We&apos;ll save this report to your dashboard so you can find it later — just log
-            in with this same email, no account setup required.
-          </p>
-        </div>
-
         <div className="flex justify-end pt-2">
           <button
             onClick={handleSubmit}
             disabled={!valid}
             className="rounded-lg bg-accent px-6 py-2.5 text-sm font-medium text-white shadow-card transition hover:bg-accent-dark disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
-            Research & Generate My Report
+            Generate My Report
           </button>
         </div>
         {!valid && (
