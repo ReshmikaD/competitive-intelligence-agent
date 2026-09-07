@@ -209,7 +209,7 @@ function ReportDocument({ report }: { report: CompetitiveReport }) {
   return (
     <Document
       title={`${report.productName} — Competitive Intelligence Report`}
-      author="Competitive Intelligence Agent"
+      author="Scout AI"
     >
       {/* Cover + Executive Summary */}
       <Page size="A4" style={styles.page}>
