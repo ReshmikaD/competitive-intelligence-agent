@@ -72,7 +72,6 @@ export default function AnalysisForm({
   const [targetCustomers, setTargetCustomers] = useState<string[]>([]);
   const [knownCompetitors, setKnownCompetitors] = useState<string[]>([]);
   const [email, setEmail] = useState("");
-  const [monthlyDelivery, setMonthlyDelivery] = useState(false);
 
   const valid =
     productName.trim().length > 0 &&
@@ -96,14 +95,13 @@ export default function AnalysisForm({
       targetCustomers,
       knownCompetitors,
       email: email.trim() || undefined,
-      monthlyDelivery: monthlyDelivery && Boolean(email.trim()),
     });
   }
 
   return (
     <div className="mx-auto max-w-xl px-6 py-16">
       <p className="mb-1 font-mono text-xs uppercase tracking-wide text-mist">
-        Tell Claude about your product
+        Tell us about your product
       </p>
       <h1 className="mb-8 text-2xl font-semibold tracking-tight text-ink">
         Four things, then we research.
@@ -155,7 +153,7 @@ export default function AnalysisForm({
 
         <div>
           <label className="mb-1.5 block text-sm font-medium text-ink">
-            Competitors <span className="font-normal text-mist">(optional — Claude will find more)</span>
+            Competitors <span className="font-normal text-mist">(optional — we'll find more)</span>
           </label>
           <TagInput
             tags={knownCompetitors}
@@ -180,16 +178,6 @@ export default function AnalysisForm({
             We&apos;ll save this report to your dashboard so you can find it later — just log
             in with this same email, no account setup required.
           </p>
-          <label className="mt-3 flex items-center gap-2 text-sm text-mist">
-            <input
-              type="checkbox"
-              checked={monthlyDelivery}
-              disabled={!email.trim()}
-              onChange={(e) => setMonthlyDelivery(e.target.checked)}
-              className="accent-accent"
-            />
-            Also send me a fresh version of this every month
-          </label>
         </div>
 
         <div className="flex justify-end pt-2">
