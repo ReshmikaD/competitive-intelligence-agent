@@ -68,7 +68,7 @@ export default function MobileNav() {
           <span className="flex items-center gap-2">
             <Logo />
             <span className="font-mono text-[13px] font-medium tracking-tight text-ink">
-              Scout AI
+              ScoutAI
             </span>
           </span>
           <button

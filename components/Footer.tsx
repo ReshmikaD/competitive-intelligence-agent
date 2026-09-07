@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 text-center sm:flex-row sm:text-left">
         <div className="flex items-center gap-2">
           <Logo className="h-6 w-6" />
-          <span className="font-mono text-xs text-mist">Scout AI</span>
+          <span className="font-mono text-xs text-mist">ScoutAI</span>
         </div>
         <p className="text-xs text-mist">
           Your product and competitor details are never shared with anyone else.
