@@ -1,4 +1,4 @@
-# Competitive Intelligence Agent
+# Scout AI
 
 An AI-powered competitive intelligence tool for Product Managers. Give it four
 things — your product, its industry, your target customers, and any
