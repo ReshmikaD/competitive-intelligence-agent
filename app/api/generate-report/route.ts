@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReport } from "@/lib/anthropic";
-import { saveReportToHistory } from "@/lib/store";
 import type { AnalysisInput } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -38,14 +37,10 @@ export async function POST(req: NextRequest) {
   try {
     const report = await generateReport(body);
 
-    // Best-effort: as long as an email was given, save this report to that
-    // person's dashboard right away â logging in later should show every
-    // report they've ever generated.
-    if (body.email) {
-      saveReportToHistory(body.email, report).catch((err) =>
-        console.error("Failed to save report history:", err)
-      );
-    }
+    // Saving to a dashboard now happens client-side on the report view,
+    // gated by whether the visitor has an active session (see
+    // components/report/ReportView.tsx and app/api/reports/save/route.ts) —
+    // this endpoint no longer keys anything off an email collected here.
 
     return NextResponse.json({ report });
   } catch (err) {
