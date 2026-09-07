@@ -11,7 +11,7 @@ const problems = [
   },
   {
     title: "Data Without Direction",
-    body: "Plenty of information, but rarely a clear answer to “so what do I do about it?”",
+    body: "Plenty of information, but it rarely tells you what to actually do about it.",
     icon: "○",
   },
 ];

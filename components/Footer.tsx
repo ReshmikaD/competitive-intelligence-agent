@@ -15,13 +15,13 @@ export default function Footer() {
           <a href="#top" className="text-xs text-mist transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
             Home
           </a>
-          <a href="#how-it-works" className="text-xs text-mist transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+          <a href="#how-it-works" className="text-xs text-mist transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2">
             How it works
           </a>
           <a href="#benefits" className="text-xs text-mist transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
             Benefits
           </a>
-          <a href="#get-started" className="text-xs text-mist transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+          <a href="/create" className="text-xs text-mist transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2">
             Get started
           </a>
         </div>

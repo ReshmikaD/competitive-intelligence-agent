@@ -12,17 +12,9 @@ const benefits = [
     body: "Every signal is converted into a threat level and a recommended action.",
   },
   {
-    title: "Walk in with evidence",
-    body: "Back roadmap decisions with a current view of the market.",
-  },
-  {
     title: "Come back anytime",
     body: "Every report you generate is saved to your dashboard — log back in and pick up right where you left off.",
     highlight: true,
-  },
-  {
-    title: "Your data stays yours",
-    body: "Nothing about your product or competitors is shared with anyone else.",
   },
 ];
 
@@ -39,7 +31,7 @@ export default function Benefits() {
           </h2>
         </div>
 
-        <div className="mt-14 grid gap-px overflow-hidden rounded-xl2 border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-px overflow-hidden rounded-xl2 border border-line bg-line sm:grid-cols-2">
           {benefits.map((b) => (
             <div
               key={b.title}

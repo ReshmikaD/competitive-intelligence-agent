@@ -12,7 +12,7 @@ const steps = [
   {
     n: "03",
     title: "Read it right on the page",
-    body: "Your report opens in a clean, scannable view — save it as a PDF whenever you want, or come back to it anytime from your dashboard.",
+    body: "Your report opens in a clean, scannable view — save it as a PDF whenever you want, or come back to it later.",
   },
   {
     n: "04",
