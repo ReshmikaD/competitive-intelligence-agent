@@ -16,7 +16,7 @@ export default function DemoPage() {
           <Link href="/" className="flex items-center gap-2.5">
             <Logo />
             <span className="text-sm font-semibold tracking-tight text-ink">
-              Competitive Intelligence Agent
+              Scout AI
             </span>
           </Link>
           <Link href="/" className="text-sm text-mist transition hover:text-ink">
