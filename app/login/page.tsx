@@ -44,7 +44,7 @@ export default function LoginPage() {
         <Link href="/" className="mb-8 flex items-center justify-center gap-2.5">
           <Logo />
           <span className="text-sm font-semibold tracking-tight text-ink">
-            Scout AI
+            ScoutAI
           </span>
         </Link>
 
