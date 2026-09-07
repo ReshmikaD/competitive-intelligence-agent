@@ -1,117 +1,120 @@
 # ScoutAI
 
-An AI-powered competitive intelligence tool for Product Managers. Give it four
-things — your product, its industry, your target customers, and any
-competitors you know about — and it actually browses the web (competitor
-websites, TechCrunch, industry news) to research and return a full report:
-competitor landscape, feature movement, market trends, an opportunity radar,
-recommended actions, and the exact sources it consulted. The report opens
-in a clean, readable in-page view (save it as a PDF whenever you want), and
-every report you generate is saved to your own dashboard — sign in with your
-email and it's all there.
+ScoutAI is a competitive intelligence tool for Product Managers. Tell it about
+your product, and it actually browses the web — competitor websites,
+TechCrunch, industry news — to research and write a full report: who you're
+up against, what they've shipped recently, where the market's heading, and
+what to do next. No manual searching, no stitching together screenshots.
 
-The sample report at `/demo` works with zero setup so you can see the real
-thing before running your own analysis. Nothing ever leaves the app over
-email — signing in is instant, and there's no monthly send to configure.
+There's a live demo at `/demo` with zero setup. To generate a *real* report
+on your own product, you need your own Anthropic API key — this project has
+no shared backend, so every person who runs it pays for their own usage.
+That's what this README walks you through.
 
-There's no shared backend — every deployment runs on its own Anthropic API
-key, so nothing about your product or competitors goes anywhere except your
-own account. Clone this repo, add your own key (and optionally Upstash for
-login and the report dashboard), and deploy it to Vercel under your own
-account.
+## Run it yourself
 
-## Stack
+You'll need [Node.js](https://nodejs.org) 18 or later and an Anthropic API
+key (get one at [console.anthropic.com](https://console.anthropic.com) —
+sign up, add billing, then create a key under **API Keys**).
 
-- Next.js 15 (App Router) + TypeScript + Tailwind CSS
-- `@anthropic-ai/sdk` — a two-step pipeline per report:
-  1. **Research**: the model is given the `web_search` and `web_fetch` server tools and told to actually visit each named competitor's website plus TechCrunch/industry sources before writing anything.
-  2. **Structure**: a second, forced tool-use call converts that research into a strict JSON schema, guaranteeing the frontend and PDF always get a shape they can render.
-- `@react-pdf/renderer` — renders the report as a real PDF, server-side, with no headless browser required
-- Upstash Redis (REST API) — optional, powers login and the report dashboard
+**1. Clone the repo**
 
-## Getting started
+```bash
+git clone https://github.com/ReshmikaD/competitive-intelligence-agent.git
+cd competitive-intelligence-agent
+```
+
+**2. Install dependencies**
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in the values below
+```
+
+**3. Add your API key**
+
+Copy the example env file, then paste your key in:
+
+```bash
+cp .env.example .env.local
+```
+
+Open `.env.local` and fill in:
+
+```
+ANTHROPIC_API_KEY=your-key-here
+```
+
+That's the only thing required to generate real reports. Everything else in
+`.env.example` is optional (see below).
+
+**4. Run it**
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000), go to **Run Your Own
+Analysis**, and try it on your own product.
 
-### Environment variables
+## Optional: login and saved reports
 
-| Variable | Required | Purpose |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | Yes | Powers report generation. Get one at [console.anthropic.com](https://console.anthropic.com). |
-| `ANTHROPIC_MODEL` | No | Defaults to `claude-sonnet-5`. |
-| `UPSTASH_REDIS_REST_URL` | For login, dashboard | From an [Upstash](https://upstash.com) Redis database (free tier is enough). |
-| `UPSTASH_REDIS_REST_TOKEN` | For login, dashboard | Same Upstash database. |
-| `SESSION_SECRET` | For login, dashboard | Signs session cookies. Generate with `openssl rand -hex 32`. |
+By default, anyone can generate a report — no account needed. If you also
+want sign-in and a dashboard of past reports, add a free
+[Upstash](https://upstash.com) Redis database and fill in the remaining
+variables in `.env.local`:
 
-The app degrades gracefully without the optional variables: without Upstash
-and `SESSION_SECRET`, `/login` and `/account` show a clear "not configured"
-error instead of a broken form. Generating a report at `/create` always
-works regardless — none of this is required for the core flow.
+```
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+SESSION_SECRET=       # generate with: openssl rand -hex 32
+```
 
-`web_search` and `web_fetch` are Anthropic server-side tools — no extra API
-key or setup needed beyond `ANTHROPIC_API_KEY`; Anthropic runs the actual web
-requests and returns the results as part of the same API call.
+Without these, `/login` and `/account` just show a friendly "not configured"
+message — the core report-generation flow works fully without them.
 
-Real web research takes longer than a single model call — typically
-30-90 seconds, more with several named competitors. `maxDuration` on the
-report-generation route is set to 300s, which requires a Vercel Pro plan;
-on the Hobby plan it's silently clamped to 60s, which may time out on
-larger requests.
+## How it works
 
-## Signing in and the report dashboard
+- **Research**: Claude is given real `web_search` and `web_fetch` tools and
+  told to actually visit each competitor's site plus TechCrunch and industry
+  sources — not rely on what it already knows.
+- **Structuring**: a second call converts that research into a strict format,
+  so the report and PDF export always render correctly.
+- **PDF export**: every report can be saved as a PDF, rendered server-side.
 
-Signing in is instant — enter an email on `/login` and you're straight into
-that email's session, no verification step, nothing sent or received. This
-trades a stronger identity guarantee for a login that never leaves the app;
-it's meant for one person's own deployment revisiting their own reports, not
-as a security boundary between untrusted users. This needs
-`UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` and `SESSION_SECRET` —
-without them, `/login` shows a clear error instead of a broken form.
+Real research takes 30-90 seconds, more with several competitors named. If
+you deploy to Vercel, note that `maxDuration` is set to 300 seconds, which
+needs a Pro plan — the Hobby plan clamps this to 60 seconds, which may not be
+enough time for larger requests.
 
-Once signed in, `/account` shows **Your Reports** — every report generated
-with that email address, each with a "View PDF" button that re-renders the
-stored data fresh rather than storing the PDF binary itself.
+## Deploying your own copy
 
-## Deploying to Vercel
-
-1. Push this repo to GitHub.
-2. Import it in [Vercel](https://vercel.com/new).
-3. Add the environment variables above in Project Settings → Environment
-   Variables.
+1. Fork or clone this repo and push it to your own GitHub account.
+2. Import it at [vercel.com/new](https://vercel.com/new).
+3. In Project Settings → Environment Variables, add `ANTHROPIC_API_KEY` (and
+   the optional Upstash/session variables if you want login).
 4. Deploy.
 
 ## Project structure
 
 ```
 app/
-  page.tsx                    Landing page
-  login/page.tsx                Instant sign-in form (no email round trip)
-  account/page.tsx               The report dashboard (session-gated)
-  create/page.tsx              Interactive workflow: 4-field form → generating → report
-  demo/page.tsx                 Renders the fixed sample report in the real ReportView UI
-  api/generate-report/          Runs the research + structure pipeline, saves to history
-  api/auth/login/                 Creates a session for the entered email, no email sent
-  api/auth/logout/                Clears the session cookie
-pages/api/
-  report-pdf.ts                  Renders any CompetitiveReport (POST body) to a PDF, inline
-  sample-report-pdf.ts            Renders the fixed sample report to a PDF, inline (GET)
-  # These two live under pages/api rather than app/api on purpose — see
-  # the comment at the top of report-pdf.ts.
+  page.tsx                Landing page
+  login/, signup/          Instant sign-in / account creation (optional)
+  account/                 Saved report dashboard (optional, session-gated)
+  create/                  The main workflow: 4-field form → report
+  demo/                    Fixed sample report, no API key needed
+  api/generate-report/     Runs the research + structuring pipeline
 components/
-  create/                      AnalysisForm (4 fields + tag inputs), GeneratingState
-  report/                      ReportView, ReportNav, charts/
-  account/                     AccountFeed — the interactive part of /account
+  create/                  The analysis form and loading state
+  report/                  Report view, charts, sections
 lib/
-  anthropic.ts                  Research (web_search/web_fetch) + structured extraction
-  pdf.tsx                        @react-pdf/renderer PDF layout
-  auth.ts                        Signed session cookies (no tokens, no email)
-  store.ts                      Upstash-backed report history
-  sampleReport.ts                Fixed data behind the /demo sample report
-  types.ts                      Shared TypeScript types
+  anthropic.ts             Research + structured extraction logic
+  pdf.tsx                  PDF layout
+  auth.ts, store.ts        Optional login + report history
+  sampleReport.ts          Fixed data behind /demo
+  types.ts                 Shared TypeScript types
 ```
+
+## License
+
+MIT — see [LICENSE](./LICENSE). Use it, modify it, ship your own version.
