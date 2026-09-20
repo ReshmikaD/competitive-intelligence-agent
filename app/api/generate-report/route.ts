@@ -9,6 +9,13 @@ export const runtime = "nodejs";
 // requests with many named competitors.
 export const maxDuration = 300;
 
+// Cheap, instant check the client calls before kicking off the (slow) real
+// research run — just reads an env var, no Anthropic call — so a missing key
+// can be surfaced the moment someone clicks "Generate", not 30-90s later.
+export async function GET() {
+  return NextResponse.json({ hasApiKey: !!process.env.ANTHROPIC_API_KEY });
+}
+
 export async function POST(req: NextRequest) {
   let body: AnalysisInput;
   try {
