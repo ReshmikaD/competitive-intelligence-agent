@@ -30,6 +30,24 @@ export default function LoginPage() {
         setErrorCode(data.code);
         throw new Error(data.error || "Failed to log in.");
       }
+
+      // If a report was generated before logging in (see the "Log In" link
+      // on that save-to-account prompt in ReportView), save it now that
+      // there's a session — otherwise it'd just be lost.
+      try {
+        const pending = sessionStorage.getItem("cia-pending-report");
+        if (pending) {
+          await fetch("/api/reports/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: pending,
+          });
+          sessionStorage.removeItem("cia-pending-report");
+        }
+      } catch {
+        // best-effort — don't block login on this
+      }
+
       router.push("/account");
       router.refresh();
     } catch (err) {
