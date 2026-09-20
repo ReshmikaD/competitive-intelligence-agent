@@ -56,9 +56,30 @@ function CreatePageInner() {
 
   async function handleGenerate(input: AnalysisInput) {
     setLastInput(input);
-    setPhase("generating");
     setErrorMessage("");
     setErrorCode(undefined);
+
+    // Instant check first: is a key even configured? This is a plain env-var
+    // read on the server, no Anthropic call, so it comes back immediately —
+    // no reason to run the whole 30-90s research animation just to learn
+    // there's no key at the end of it.
+    try {
+      const checkRes = await fetch("/api/generate-report");
+      const checkData = await checkRes.json();
+      if (!checkData.hasApiKey) {
+        setErrorCode("missing_api_key");
+        setErrorMessage(
+          "This deployment doesn't have an active Anthropic API key connected."
+        );
+        setPhase("error");
+        return;
+      }
+    } catch {
+      // If the check itself fails, fall through — the real request below
+      // will surface whatever the actual problem is.
+    }
+
+    setPhase("generating");
     const abort = new AbortController();
     setController(abort);
     try {
