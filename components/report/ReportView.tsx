@@ -15,7 +15,7 @@ function LevelBadge({ level }: { level: Level }) {
       ? "bg-threat-med/10 text-threat-med"
       : "bg-threat-low/10 text-threat-low";
   return (
-    <span className={`rounded-full px-2 py-0.5 font-mono text-[11px] font-medium ${tone}`}>
+    <span className={\`rounded-full px-2 py-0.5 font-mono text-[11px] font-medium \${tone}\`}>
       {level}
     </span>
   );
@@ -53,7 +53,7 @@ function splitLead(text: string): [string, string] {
 function Takeaway({ text, className = "" }: { text: string; className?: string }) {
   const [lead, rest] = splitLead(text);
   return (
-    <p className={`text-sm leading-relaxed ${className}`}>
+    <p className={\`text-sm leading-relaxed \${className}\`}>
       <span className="font-medium text-ink">{lead}</span>{" "}
       {rest && <span className="text-mist">{rest}</span>}
     </p>
@@ -106,7 +106,7 @@ export default function ReportView({
    *  save-to-account banner below. Absent for the static /demo report,
    *  which never shows a save prompt. */
   analysisInput?: AnalysisInput;
-  /** The `?report=<id>` id this report is cached under in sessionStorage
+  /** The \`?report=<id>\` id this report is cached under in sessionStorage
    *  (see app/create/page.tsx). Used to de-dupe the save-to-history call
    *  below so a page refresh on the same report doesn't save it again. */
   reportId?: string;
@@ -141,7 +141,7 @@ export default function ReportView({
     // "saved" marker in sessionStorage, keyed by the same report id the
     // page caches the report under, so it survives the remount and a save
     // only ever fires once per generated report.
-    const savedKey = reportId ? `cia-report-saved-${reportId}` : null;
+    const savedKey = reportId ? \`cia-report-saved-\${reportId}\` : null;
     if (savedKey) {
       try {
         if (sessionStorage.getItem(savedKey) === "1") {
@@ -181,6 +181,15 @@ export default function ReportView({
           }
           if (!cancelled) setSaveBanner("saved");
         } else {
+          // Not signed in — stash this report so that if the visitor clicks
+          // "Create Account" or "Log In" below, it gets saved automatically
+          // right after auth succeeds instead of being lost when they
+          // navigate away from this page (see app/login and app/signup).
+          try {
+            sessionStorage.setItem("cia-pending-report", JSON.stringify({ report }));
+          } catch {
+            // ignore — worst case it just won't auto-save after login
+          }
           setSaveBanner("prompt");
         }
       } catch {
@@ -451,7 +460,7 @@ export default function ReportView({
                   {radar.map((o) => (
                     <tr
                       key={o.rank}
-                      className={`border-b border-line last:border-0 ${o.rank === 1 ? "bg-accent-soft/40" : ""}`}
+                      className={\`border-b border-line last:border-0 \${o.rank === 1 ? "bg-accent-soft/40" : ""}\`}
                     >
                       <td className="px-4 py-3 font-mono text-mist">#{o.rank}</td>
                       <td className="px-4 py-3 font-medium text-ink">{o.opportunity}</td>
