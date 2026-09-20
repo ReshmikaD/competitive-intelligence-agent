@@ -32,6 +32,24 @@ export default function SignupPage() {
         setErrorCode(data.code);
         throw new Error(data.error || "Failed to create your account.");
       }
+
+      // If a report was generated before signing up (see the "Create
+      // Account" link on that save-to-account prompt in ReportView), save
+      // it now that there's a session — otherwise it'd just be lost.
+      try {
+        const pending = sessionStorage.getItem("cia-pending-report");
+        if (pending) {
+          await fetch("/api/reports/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: pending,
+          });
+          sessionStorage.removeItem("cia-pending-report");
+        }
+      } catch {
+        // best-effort — don't block signup on this
+      }
+
       router.push("/account");
       router.refresh();
     } catch (err) {
